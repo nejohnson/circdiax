@@ -1580,11 +1580,51 @@
  }{}
 }
 % Electrolytic capacitors
-\newcommand{\elcap}[1]{
- \ifthenelse{\equal{#1}{LU}}{\cdplus{-1.2}{1.2}}{}
- \ifthenelse{\equal{#1}{RU}}{\cdplus{1.2}{1.2}}{}
- \ifthenelse{\equal{#1}{LD}}{\cdplus{-1.2}{-1.2}}{}
- \ifthenelse{\equal{#1}{RD}}{\cdplus{1.2}{-1.2}}{}
+\newcommand{\elcap}[6][]{
+ \prepareelement{C}{}{#4}{#5}{#6}
+ \begin{scope}[shift = {(#2, #3)}]
+  \ifthenelse{\equal{\cdorient}{L}}{\elcapL{#1}}{}
+  \ifthenelse{\equal{\cdorient}{R}}{\elcapR{#1}}{}
+  \ifthenelse{\equal{\cdorient}{U}}{\elcapU{#1}}{}
+  \ifthenelse{\equal{\cdorient}{D}}{\elcapD{#1}}{}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\elcapL}[1]{
+ \setstandardtextpos{u}
+ \placerefvalV{-2.3}{0}{2.3}{-2.75}{0}{2.75}
+ #1
+ \draw [cdmedlines] (0,-1.7) -- (0,1.7) -- (-0.9,1.7) -- (-0.9,-1.7) -- (0, -1.7);
+ \draw [cdthickrectlines] (0.7, 1.6) -- (0.7, -1.6);
+ \draw (-0.9, 0) -- (-2, 0) (0.7,0) -- (2, 0);
+ \cdplus{-1.7}{-1.2}
+}
+\newcommand{\elcapR}[1]{
+ \setstandardtextpos{u}
+ \placerefvalV{-2.3}{0}{2.3}{-2.75}{0}{2.75}
+ #1
+ \draw [cdmedlines] (0,-1.7) -- (0,1.7) -- (0.9,1.7) -- (0.9,-1.7) -- (0, -1.7);
+ \draw [cdthickrectlines] (-0.7, 1.6) -- (-0.7, -1.6);
+ \draw (-0.7, 0) -- (-2, 0) (0.9,0) -- (2, 0);
+ \cdplus{1.7}{-1.2}
+}
+\newcommand{\elcapU}[1]{
+ \setstandardtextpos{r}
+ \placerefvalV{-2.3}{0}{2.3}{-2.75}{0}{2.75}
+ #1
+ \draw [cdmedlines] (-1.7, 0) -- (1.7, 0) -- (1.7,0.9) -- (-1.7, 0.9) -- (-1.7, 0);
+ \draw [cdthickrectlines] (-1.6, -0.7) -- (1.6,-0.7);
+ \draw (0, -0.7) -- (0, -2) (0, 0.9) -- (0, 2);
+ \cdplus{1.2}{1.7}
+}
+\newcommand{\elcapD}[1]{
+ \setstandardtextpos{r}
+ \placerefvalV{-2.3}{0}{2.3}{-2.75}{0}{2.75}
+ #1
+ \draw [cdmedlines] (-1.7, 0) -- (1.7, 0) -- (1.7,-0.9) -- (-1.7, -0.9) -- (-1.7, 0);
+ \draw [cdthickrectlines] (-1.6, 0.7) -- (1.6, 0.7);
+ \draw (0, -0.9) -- (0, -2) (0, 0.7) -- (0, 2);
+ \cdplus{1.2}{-1.7}
 }
 % Windings
 \newcommand{\windings}[1]{
