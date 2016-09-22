@@ -226,6 +226,7 @@
 \tikzset{cdthinlines/.style = {line width = 0.1ex}}
 \tikzset{cdmedlines/.style = {line width = 0.17ex}}
 \tikzset{cdthicklines/.style = {line width = 0.4ex}}
+\tikzset{cdthickrectlines/.style = {line width = 0.4ex, cap = rect}}
 % Options
 \newif\ifcurlyinduc
 \newif\iffilledinduc
@@ -979,14 +980,14 @@
  \setstandardtextpos{r}
  \placerefvalH{-1.25}{0}{1.25}{-3}{0}{3}
  #1
- \draw [cdmedlines] (-0.45, -1.7) -- (-0.45, 1.7) (0.45, -1.7) -- (0.45, 1.7);
+ \draw [cdthickrectlines] (-0.45, -1.7) -- (-0.45, 1.7) (0.45, -1.7) -- (0.45, 1.7);
  \draw (-0.45, 0) -- (-1, 0) (0.45, 0) -- (1, 0);
 }
 \newcommand{\capacV}[1]{
  \setstandardtextpos{hr}
  \placerefvalV{-2.25}{0}{2.25}{-1.75}{0}{1.75}
  #1
- \draw [cdmedlines] (-1.7, -0.45) -- (1.7, -0.45) (-1.7, 0.45) -- (1.7, 0.45);
+ \draw [cdthickrectlines] (-1.7, -0.45) -- (1.7, -0.45) (-1.7, 0.45) -- (1.7, 0.45);
  \draw (0, -0.45) -- (0, -1) (0, 0.45) -- (0, 1);
 }
 % Inductors
@@ -1060,7 +1061,7 @@
  \else
   \draw [cdmedlines] (-1.25, 0) -- (1.25, -1.25) -- (1.25, 1.25) -- cycle;
  \fi
- \draw [cdmedlines] (-1.25, -1.25) -- (-1.25, 1.25);
+ \draw [cdthickrectlines] (-1.25, -1.25) -- (-1.25, 1.25);
  \ifemptydiode
   \draw (-1.25, 0) -- (-2, 0) (1.25, 0) -- (2, 0);
  \else
@@ -1076,7 +1077,7 @@
  \else
   \draw [cdmedlines] (1.25, 0) -- (-1.25, 1.25) -- (-1.25, -1.25) -- cycle;
  \fi
- \draw [cdmedlines] (1.25, -1.25) -- (1.25, 1.25);
+ \draw [cdthickrectlines] (1.25, -1.25) -- (1.25, 1.25);
  \ifemptydiode
   \draw (-1.25, 0) -- (-2, 0) (1.25, 0) -- (2, 0);
  \else
@@ -1092,7 +1093,7 @@
  \else
   \draw [cdmedlines] (0, 1.25) -- (-1.25, -1.25) -- (1.25,-1.25) -- cycle;
  \fi
- \draw [cdmedlines] (-1.25, 1.25) -- (1.25, 1.25);
+ \draw [cdthickrectlines] (-1.25, 1.25) -- (1.25, 1.25);
  \ifemptydiode
   \draw (0, -1.25) -- (0, -2) (0, 1.25) -- (0, 2);
  \else
@@ -1108,7 +1109,7 @@
  \else
   \draw [cdmedlines] (0, -1.25) -- (1.25, 1.25) -- (-1.25, 1.25) -- cycle;
  \fi
- \draw [cdmedlines] (-1.25, -1.25) -- (1.25, -1.25);
+ \draw [cdthickrectlines] (-1.25, -1.25) -- (1.25, -1.25);
  \ifemptydiode
   \draw (0, -1.25) -- (0, -2) (0, 1.25) -- (0, 2);
  \else
@@ -1138,7 +1139,7 @@
  #1
  \ifcircledtrans\draw [cdmedlines] (0.2, 0) circle (2.6625);\fi
  \ifthenelse{\equal{\cdtype}{npn}\or\equal{\cdtype}{pnp}}{
-  \draw [cdthicklines] (1.1, -1.75) -- (1.1, 1.75);
+  \draw [cdthickrectlines] (1.1, -1.75) -- (1.1, 1.75);
   \draw (3, 0) -- (1.1, 0) (1.1, -0.7) -- (-1, -2.377) -- (-1, -3) (1.1, 0.7) -- (-1, 2.377) -- (-1, 3);
   \ifthenelse{\equal{\cdtype}{npn}}{
    \ifthenelse{\equal{\cdsuborient}{U}}{\cdbigarrow{-0.79}{2.209}{141.4}}{}
@@ -1161,9 +1162,9 @@
    }{}
   }{
    \ifthenelse{\equal{\cdtype}{nenh}\or\equal{\cdtype}{nenh*}\or\equal{\cdtype}{penh}\or\equal{\cdtype}{penh*}}{
-    \draw [cdthicklines] (0.2, -1.9) -- (0.2, -1.1) (0.2, -0.4) -- (0.2, 0.4) (0.2, 1.1) -- (0.2, 1.9);
+    \draw [cdthickrectlines] (0.2, -1.9) -- (0.2, -1.1) (0.2, -0.4) -- (0.2, 0.4) (0.2, 1.1) -- (0.2, 1.9);
    }{
-    \draw [cdthicklines] (0.2, -1.9) -- (0.2, 1.9);
+    \draw [cdthickrectlines] (0.2, -1.9) -- (0.2, 1.9);
    }
    \draw (1.1, -1.5) -- (1.1, 1.5);
    \ifthenelse{\equal{\cdsuborient}{U}}{\draw (3, 1.5) -- (1.1, 1.5);}{}
@@ -1197,7 +1198,7 @@
  #1
  \ifcircledtrans\draw [cdmedlines] (-0.2, 0) circle (2.6625);\fi
  \ifthenelse{\equal{\cdtype}{npn}\or\equal{\cdtype}{pnp}}{
-  \draw [cdthicklines] (-1.1, -1.75) -- (-1.1, 1.75);
+  \draw [cdthickrectlines] (-1.1, -1.75) -- (-1.1, 1.75);
   \draw (-3, 0) -- (-1.1, 0) (-1.1, -0.7) -- (1, -2.377) -- (1, -3) (-1.1, 0.7) -- (1, 2.377) -- (1, 3);
   \ifthenelse{\equal{\cdtype}{npn}}{
    \ifthenelse{\equal{\cdsuborient}{U}}{\cdbigarrow{0.79}{2.209}{38.6}}{}
@@ -1220,9 +1221,9 @@
    }{}
   }{
    \ifthenelse{\equal{\cdtype}{nenh}\or\equal{\cdtype}{nenh*}\or\equal{\cdtype}{penh}\or\equal{\cdtype}{penh*}}{
-    \draw [cdthicklines] (-0.2, -1.9) -- (-0.2, -1.1) (-0.2, -0.4) -- (-0.2, 0.4) (-0.2, 1.1) -- (-0.2, 1.9);
+    \draw [cdthickrectlines] (-0.2, -1.9) -- (-0.2, -1.1) (-0.2, -0.4) -- (-0.2, 0.4) (-0.2, 1.1) -- (-0.2, 1.9);
    }{
-    \draw [cdthicklines] (-0.2, -1.9) -- (-0.2, 1.9);
+    \draw [cdthickrectlines] (-0.2, -1.9) -- (-0.2, 1.9);
    }
    \draw (-1.1, -1.5) -- (-1.1, 1.5);
    \ifthenelse{\equal{\cdsuborient}{U}}{\draw (-3, 1.5) -- (-1.1, 1.5);}{}
