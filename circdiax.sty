@@ -1775,6 +1775,24 @@
   }
  }
 }
+% Ferrite cores
+\newcommand{\ferritecore}{
+ \ifthenelse{\equal{\cdinfo}{}}{\FPset\cdfloat3}{\FPmul\cdfloat{0.75}\cdinfo}
+ \iffilledinduc\FPsub\cdfloat\cdfloat{0.45}\fi
+ \ifthenelse{\equal{\cdorient}{H}}{
+  \ifthenelse{\equal{\cdsuborient}{U}}{
+   \draw [cdmedlines,dash pattern=on 5pt off 5pt] (-\FPprint\cdfloat, 1.28) -- (\FPprint\cdfloat, 1.28);
+  }{
+   \draw [cdmedlines,dash pattern=on 5pt off 5pt] (-\FPprint\cdfloat, -1.28) -- (\FPprint\cdfloat, -1.28);
+  }
+ }{
+  \ifthenelse{\equal{\cdsuborient}{L}}{
+   \draw [cdmedlines,dash pattern=on 5pt off 5pt] (-1.28, -\FPprint\cdfloat) -- (-1.28, \FPprint\cdfloat);
+  }{
+   \draw [cdmedlines,dash pattern=on 5pt off 5pt] (1.28, -\FPprint\cdfloat) -- (1.28, \FPprint\cdfloat);
+  }
+ }
+}
 % Zener diodes
 \newcommand{\zener}[1]{
  \ifthenelse{\equal{\cdorient}{L}}{
