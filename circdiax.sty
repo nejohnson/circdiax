@@ -1,6 +1,11 @@
-% circdia.sty
+% circdiax.sty
+%
+% Derived from:
 % from http://www.jokr.de/stefan/
 % File created by Stefan Krause -- version 6.4.
+%
+% Extended by: Neil Johnson
+%
 % Draws circuit diagrams.
 % Package options:
 %  normalinduc
@@ -216,7 +221,7 @@
 %  \relayandswitch{}{}
 % from the switch subpackage.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{circdia}[2015/12/13]
+\ProvidesPackage{circdiax}[2016/09/22]
 \RequirePackage[nomessages]{fp}
 \RequirePackage{ifthen,tikz}
 % User redefinable
@@ -2170,17 +2175,17 @@
  }
 }
 % Further options
-\DeclareOption{autoref}{\input{cd-autoref.sty}}
-\DeclareOption{color}{\input{cd-color.sty}}
-\DeclareOption{control}{\input{cd-control.sty}}
-\DeclareOption{diag}{\input{cd-diag.sty}}
-\DeclareOption{digital}{\input{cd-digital.sty}}
-\DeclareOption{graph}{\input{cd-graph.sty}}
-\DeclareOption{ic}{\input{cd-ic.sty}}
-\DeclareOption{mech}{\input{cd-mech.sty}}
-\DeclareOption{passive}{\input{cd-passive.sty}}
-\DeclareOption{semicon}{\input{cd-semicon.sty}}
-\DeclareOption{srcmeas}{\input{cd-srcmeas.sty}}
-\DeclareOption{switch}{\input{cd-switch.sty}}
+\DeclareOption{autoref}{\input{cdx-autoref.sty}}
+\DeclareOption{color}{\input{cdx-color.sty}}
+\DeclareOption{control}{\input{cdx-control.sty}}
+\DeclareOption{diag}{\input{cdx-diag.sty}}
+\DeclareOption{digital}{\input{cdx-digital.sty}}
+\DeclareOption{graph}{\input{cdx-graph.sty}}
+\DeclareOption{ic}{\input{cdx-ic.sty}}
+\DeclareOption{mech}{\input{cdx-mech.sty}}
+\DeclareOption{passive}{\input{cdx-passive.sty}}
+\DeclareOption{semicon}{\input{cdx-semicon.sty}}
+\DeclareOption{srcmeas}{\input{cdx-srcmeas.sty}}
+\DeclareOption{switch}{\input{cdx-switch.sty}}
 \ExecuteOptions{normalinduc,lineddiode,nocircledtrans}
 \ProcessOptions
