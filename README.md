@@ -5,5 +5,6 @@ Changes I have made:
 - renamed files with 'x' to avoid confusing with Stefan's original work
 - refactored electrolytic capacitors as a new base command, and with an open box for the anode.
 - added ferritecore command for inductors (aerial coils, beads, etc).
+- added alternate JFET symbols (gate junction in middle of bar).
 
 
