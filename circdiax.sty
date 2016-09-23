@@ -1156,7 +1156,7 @@
  }{
   \draw (0.2, -1.5) -- (-2, -1.5) -- (-2, -2.5) (0.2, 1.5) -- (-2, 1.5) -- (-2, 2.5);
   \ifthenelse{\equal{\cdtype}{nj}\or\equal{\cdtype}{pj}}{
-   \draw [cdthicklines] (0.2, -1.9) -- (0.2, 1.9);
+   \draw [cdthickrectlines] (0.2, -1.9) -- (0.2, 1.9);
    \ifthenelse{\equal{\cdsuborient}{U}}{
     \draw (3, 1.5) -- (0.2, 1.5);
     \ifthenelse{\equal{\cdtype}{nj}}{\cdbigarrow{0.4}{1.5}{180}}{\cdbigarrow{2.2}{1.5}{0}}
@@ -1215,7 +1215,7 @@
  }{
   \draw (-0.2, -1.5) -- (2, -1.5) -- (2, -2.5) (-0.2, 1.5) -- (2, 1.5) -- (2, 2.5);
   \ifthenelse{\equal{\cdtype}{nj}\or\equal{\cdtype}{pj}}{
-   \draw [cdthicklines] (-0.2, -1.9) -- (-0.2, 1.9);
+   \draw [cdthickrectlines] (-0.2, -1.9) -- (-0.2, 1.9);
    \ifthenelse{\equal{\cdsuborient}{U}}{
     \draw (-3, 1.5) -- (-0.2, 1.5);
     \ifthenelse{\equal{\cdtype}{nj}}{\cdbigarrow{-0.4}{1.5}{0}}{\cdbigarrow{-2.2}{1.5}{180}}
