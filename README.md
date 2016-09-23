@@ -6,5 +6,6 @@ Changes I have made:
 - refactored electrolytic capacitors as a new base command, and with an open box for the anode.
 - added ferritecore command for inductors (aerial coils, beads, etc).
 - added alternate JFET symbols (gate junction in middle of bar).
+- removed siunitx in preference to Joseph Wright's superior package of the same name.
 
 
