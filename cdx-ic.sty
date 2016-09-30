@@ -511,3 +511,35 @@
   \cdsmallarrow{0}{-1.5}{90}
  }
 }
+%
+% generic VCA
+\newcommand{\vca}[6][]{
+ \prepareelement{IC}{op}{#4}{#5}{#6}
+ \begin{scope}[shift = {(#2, #3)}]
+  \ifthenelse{\equal{\cdorient}{L}}{\vcaL{#1}}{}
+  \ifthenelse{\equal{\cdorient}{R}}{\vcaR{#1}}{}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\vcaL}[1]{
+ \setstandardsuborient{D}
+ \setstandardtextpos{hl}
+ \placerefvalH{-3.5}{0}{3.75}{-5.5}{0}{5.5}
+ #1
+ \draw [cdmedlines] (0, -2.2) rectangle (2, 2.2);
+ \draw [cdmedlines] (0, -2.2 ) -- (2, 2.2) (0, 2.2) -- (2, -2.2);
+ \draw [cdmedlines] (0, 2.2) -- (-3.2, 0) -- (0, -2.2);
+ \draw (2, 0) -- (3, 0) (-4, 0) -- (-3.2, 0);
+ \ifthenelse{\equal{\cdsuborient}{U}}{\draw (1, 2.2) -- (1, 3);}{\draw (1, -2.2) -- (1, -3);}
+}
+\newcommand{\vcaR}[1]{
+ \setstandardsuborient{D}
+ \setstandardtextpos{hr}
+ \placerefvalH{-3.75}{0}{3.5}{-5.5}{0}{5.5}
+ #1
+ \draw [cdmedlines] (0, -2.2) rectangle (-2, 2.2);
+ \draw [cdmedlines] (0, -2.2 ) -- (-2, 2.2) (0, 2.2) -- (-2, -2.2);
+ \draw [cdmedlines] (0, 2.2) -- (3.2, 0) -- (0, -2.2);
+ \draw (-2, 0) -- (-3, 0) (4, 0) -- (3.2, 0);
+ \ifthenelse{\equal{\cdsuborient}{U}}{\draw (-1, 2.2) -- (-1, 3);}{\draw (-1, -2.2) -- (-1, -3);}
+}
