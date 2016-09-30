@@ -463,3 +463,51 @@
 \newcommand{\digitalsep}[1]{
  \draw [cdvthinlines] (-3.3, #1) -- (3.3, #1);
 }
+%
+% Operational Voltage Controlled Element (OVCE) after Frey
+\newcommand{\ovce}[6][]{
+ \prepareelement{IC}{op}{#4}{#5}{#6}
+ \begin{scope}[shift = {(#2, #3)}]
+  \ifthenelse{\equal{\cdorient}{L}}{\ovceL{#1}}{}
+  \ifthenelse{\equal{\cdorient}{R}}{\ovceR{#1}}{}
+  \drawrefval
+ \end{scope}
+}
+\newcommand{\ovceL}[1]{
+ \setstandardsuborient{D}
+ \setstandardtextpos{hl}
+ \placerefvalH{-3.5}{0}{3.75}{-5.5}{0}{5.5}
+ #1
+ \draw [cdmedlines] (-3.7, 2) -- (6.4, -3.4) -- (6.4, 3.4) -- (-3.7, -2);
+ \ifthenelse{\equal{\cdsuborient}{U}}{\cdminus{5.5}{-2}\cdplus{5.5}{2}}{}
+ \ifthenelse{\equal{\cdsuborient}{D}}{\cdplus{5.5}{-2}\cdminus{5.5}{2}}{}
+ \draw [cdmedlines] (0, 0) circle (1.5);
+ \draw (6.4, -2) -- (7, -2) (6.4, 2) -- (7, 2);
+ \draw (-3.7, -2) -- (-4, -2) (-3.7, 2) -- (-4, 2);
+ \ifthenelse{\equal{\cdsuborient}{D}}{
+  \draw (0, 1.5) -- (0, 3);
+  \cdsmallarrow{0}{1.5}{270}
+ }{
+  \draw (0, -1.5) -- (0, -3);
+  \cdsmallarrow{0}{-1.5}{90}
+ }
+}
+\newcommand{\ovceR}[1]{
+ \setstandardsuborient{D}
+ \setstandardtextpos{hr}
+ \placerefvalH{-3.75}{0}{3.5}{-5.5}{0}{5.5}
+ #1
+ \draw [cdmedlines] (3.7, 2) -- (-6.4, -3.4) -- (-6.4, 3.4) -- (3.7, -2);
+ \ifthenelse{\equal{\cdsuborient}{U}}{\cdminus{-5.5}{-2}\cdplus{-5.5}{2}}{}
+ \ifthenelse{\equal{\cdsuborient}{D}}{\cdplus{-5.5}{-2}\cdminus{-5.5}{2}}{}
+ \draw [cdmedlines] (0, 0) circle (1.5);
+ \draw (3.7, 2) -- (4, 2) (3.7, -2) -- (4, -2);
+ \draw (-6.4, -2) -- (-7, -2) (-6.4, 2) -- (-7, 2);
+ \ifthenelse{\equal{\cdsuborient}{D}}{
+  \draw (0, 1.5) -- (0,3);
+  \cdsmallarrow{0}{1.5}{270}
+ }{
+  \draw (0, -1.5) -- (0,-3);
+  \cdsmallarrow{0}{-1.5}{90}
+ }
+}
