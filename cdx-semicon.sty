@@ -19,7 +19,7 @@
  \else
   \draw [cdmedlines] (-1.25, 0) -- (1.25, -1.25) -- (1.25, 1.25) -- cycle;
  \fi
- \draw [cdthickrectlines] (-1.25, -1.25) -- (-1.25, 1.25);
+ \draw [cdmedrectlines] (-1.25, -1.25) -- (-1.25, 1.25);
  \ifthenelse{\equal{\cdinfo}{capdio}}{
   \end{scope}
   \draw [cdmedlines] (-1.7, -1.25) -- (-1.7, 1.25);
@@ -43,7 +43,7 @@
  \else
   \draw [cdmedlines] (1.25, 0) -- (-1.25, 1.25) -- (-1.25, -1.25) -- cycle;
  \fi
- \draw [cdthickrectlines] (1.25, -1.25) -- (1.25, 1.25);
+ \draw [cdmedrectlines] (1.25, -1.25) -- (1.25, 1.25);
  \ifthenelse{\equal{\cdinfo}{capdio}}{
   \end{scope}
   \draw [cdmedlines] (1.7, -1.25) -- (1.7, 1.25);
@@ -67,7 +67,7 @@
  \else
   \draw [cdmedlines] (0, 1.25) -- (-1.25, -1.25) -- (1.25,-1.25) -- cycle;
  \fi
- \draw [cdthickrectlines] (-1.25, 1.25) -- (1.25, 1.25);
+ \draw [cdmedrectlines] (-1.25, 1.25) -- (1.25, 1.25);
  \ifthenelse{\equal{\cdinfo}{capdio}}{
   \end{scope}
   \draw [cdmedlines] (-1.25, 1.7) -- (1.25, 1.7);
@@ -91,7 +91,7 @@
  \else
   \draw [cdmedlines] (0, -1.25) -- (1.25, 1.25) -- (-1.25, 1.25) -- cycle;
  \fi
- \draw [cdthickrectlines] (-1.25, -1.25) -- (1.25, -1.25);
+ \draw [cdmedrectlines] (-1.25, -1.25) -- (1.25, -1.25);
  \ifthenelse{\equal{\cdinfo}{capdio}}{
   \end{scope}
   \draw [cdmedlines] (-1.25, -1.7) -- (1.25, -1.7);
@@ -160,23 +160,24 @@
 }
 % Schottky diodes and transistors
 \newcommand{\schottky}{
+ \renewcommand{\cdinfo}{schottky}
  \ifthenelse{\equal{\cdelem}{D}}{
   \ifthenelse{\equal{\cdorient}{L}}{
-   \draw [cdmedlines] (-1.25, 1.25) -| (-0.75, 0.75) (-1.25, -1.25) -| (-1.75, -0.75);
+   \draw [cdmedrectlines] (-1.25, 1.25) -| (-0.75, 0.75) (-1.25, -1.25) -| (-1.75, -0.75);
   }{}
   \ifthenelse{\equal{\cdorient}{R}}{
-   \draw [cdmedlines] (1.25, 1.25) -| (1.75, 0.75) (1.25, -1.25) -| (0.75, -0.75);
+   \draw [cdmedrectlines] (1.25, 1.25) -| (1.75, 0.75) (1.25, -1.25) -| (0.75, -0.75);
   }{}
   \ifthenelse{\equal{\cdorient}{U}}{
-   \draw [cdmedlines] (-1.25, 1.25) |- (-0.75, 1.75) (1.25, 1.25) |- (0.75, 0.75);
+   \draw [cdmedrectlines] (-1.25, 1.25) |- (-0.75, 1.75) (1.25, 1.25) |- (0.75, 0.75);
   }{}
   \ifthenelse{\equal{\cdorient}{D}}{
-   \draw [cdmedlines] (-1.25, -1.25) |- (-0.75, -0.75) (1.25, -1.25) |- (0.75, -1.75);
+   \draw [cdmedrectlines] (-1.25, -1.25) |- (-0.75, -0.75) (1.25, -1.25) |- (0.75, -1.75);
   }{}
  }{}
  % WARNING: \schottky for \trans is in beta and subject to change.
  \ifthenelse{\equal{\cdelem}{T}}{
-  \draw [cdmedlines] (-1.05, 1.84) -| (-0.55, 1.34) (-1.15, -1.84) -| (-1.65, -1.34);
+  \draw [cdmedrectlines] (-1.05, 1.84) -| (-0.55, 1.34) (-1.15, -1.84) -| (-1.65, -1.34);
  }{}
 }
 % Tunnel diodes
