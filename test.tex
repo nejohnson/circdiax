@@ -1,12 +1,7 @@
 \documentclass[11pt]{article}
-\usepackage[utf8]{inputenc}
 
-%%% PAGE DIMENSIONS
-\usepackage{geometry} % to change the page dimensions
-\geometry{a4paper} % or letterpaper (US) or a5paper or....
-
-%%% PACKAGES
-\usepackage{circdiax}
+% Load package and any changed sub-packages
+\usepackage[ic,semicon]{circdiax}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -20,7 +15,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Rectangular Bars}
+\section{Change: Rectangular Bars}
 
 \begin{circuitdiagram}[]{37}{25}
 \circledtrans
@@ -30,9 +25,10 @@
 \capac{10}{22}{V}{C2}{}
 
 \diode{4}{16}{U}{D1}{}
-\diode{10}{16}{D}{D2}{}
-\diode{16}{16}{L}{D3}{}
-\diode{22}{16}{R}{D4}{}
+\diode[\zener{L}]{10}{16}{D}{D2}{}
+\diode[\schottky]{16}{16}{L}{D3}{}
+\diode[\schottky]{22}{16}{R}{D3}{}
+\diode{28}{16}{R}{D4}{}
 
 \trans{npn}{4}{10}{L}{T1}{}
 \trans{npn}{12}{10}{R}{T2}{}
@@ -50,7 +46,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Electrolytic Capacitors}
+\section{Change: Electrolytic Capacitors}
 
 \begin{circuitdiagram}[]{33}{10}
 
@@ -63,7 +59,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Ferrite Inductors}
+\section{Add: Ferrite Inductors}
 
 \begin{circuitdiagram}[]{20}{20}
 %\curlyinduc
@@ -75,7 +71,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Alternate JFETs}
+\section{Add: Alternate JFETs}
 
 \begin{circuitdiagram}[]{20}{15}
 \circledtrans
@@ -85,6 +81,32 @@
 
 \trans{pj*}{4}{12}{L}{T7}{}
 \trans{pj*}{16}{12}{R}{T8}{}
+
+\end{circuitdiagram}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Add: OVCE}
+
+\begin{circuitdiagram}[]{40}{20}
+
+\ovce{10}{5}{LU}{IC1}{LU}
+\ovce{30}{5}{RU}{IC2}{RU}
+\ovce{10}{15}{LD}{IC3}{LD}
+\ovce{30}{15}{RD}{IC4}{RD}
+
+\end{circuitdiagram}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Add: Generic VCA}
+
+\begin{circuitdiagram}[]{40}{20}
+
+\vca{10}{5}{LU}{IC1}{LU}
+\vca{30}{5}{RU}{IC2}{RU}
+\vca{10}{15}{LD}{IC3}{LD}
+\vca{30}{15}{RD}{IC4}{RD}
 
 \end{circuitdiagram}
 
