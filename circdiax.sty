@@ -1,11 +1,8 @@
 % circdiax.sty
-%
+% Extended by: Neil Johnson <neil@njohnson.co.uk>
 % Derived from:
 % from http://www.jokr.de/stefan/
-% File created by Stefan Krause -- version 6.4.
-%
-% Extended by: Neil Johnson
-%
+% File created by Stefan Krause -- version 7.0.
 % Draws circuit diagrams.
 % Package options:
 %  normalinduc
@@ -44,7 +41,6 @@
 %  \resis[]{}{}{}{}{}
 %  \capac[]{}{}{}{}{}
 %  \induc[]{}{}{}{}{}
-%  \Ironcore{}{}{}{}
 %  \diode[]{}{}{}{}{}
 %  \trans[]{}{}{}{}{}{}
 %  \opamp[]{}{}{}{}{}
@@ -64,7 +60,6 @@
 %  \emit{}
 %  \elcap{}
 %  \windings{}
-%  \ironcore
 %  \zener{}
 %  \supply{}
 %  \putrefer{}{}{}
@@ -89,6 +84,7 @@
 %  cdthinlines
 %  cdmedlines
 %  cdthicklines
+%  cddashedlines
 % from this document.
 % You may access
 %  \newautoref
@@ -198,8 +194,14 @@
 %  \dimhelpD{}
 % from the mech subpackage.
 % You may access
+%  \Modify{}{}{}
+%  \Trim{}{}{}
+%  \Ironcore{}{}{}{}
 %  \ptc{}
 %  \ntc{}
+%  \winddot{}
+%  \ironcore
+%  \ferrcore
 % from the passive subpackage.
 % You may access
 %  \diac[]{}{}{}{}{}
@@ -221,7 +223,7 @@
 %  \relayandswitch{}{}
 % from the switch subpackage.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{circdiax}[2016/09/22]
+\ProvidesPackage{circdiax}[2016/10/04]
 \RequirePackage[nomessages]{fp}
 \RequirePackage{ifthen,tikz}
 % User redefinable
@@ -233,18 +235,21 @@
 \tikzset{cdmedrectlines/.style = {line width = 0.27ex, cap = rect}}
 \tikzset{cdthicklines/.style = {line width = 0.4ex}}
 \tikzset{cdthickrectlines/.style = {line width = 0.5ex, cap = rect}}
+\tikzset{cddashedlines/.style = {line width = 0.17ex, dash pattern = on 0.63384ex off 0.63384ex}}
 % Options
+\newif\ifnormalinduc
 \newif\ifcurlyinduc
 \newif\iffilledinduc
+\newif\iflineddiode
 \newif\ifemptydiode
 \newif\iffilleddiode
 \newif\ifcircledtrans
-\newcommand{\normalinduc}{\curlyinducfalse\filledinducfalse}
-\newcommand{\curlyinduc}{\curlyinductrue\filledinducfalse}
-\newcommand{\filledinduc}{\curlyinducfalse\filledinductrue}
-\newcommand{\lineddiode}{\emptydiodefalse\filleddiodefalse}
-\newcommand{\emptydiode}{\emptydiodetrue\filleddiodefalse}
-\newcommand{\filleddiode}{\emptydiodefalse\filleddiodetrue}
+\newcommand{\normalinduc}{\normalinductrue\curlyinducfalse\filledinducfalse}
+\newcommand{\curlyinduc}{\normalinducfalse\curlyinductrue\filledinducfalse}
+\newcommand{\filledinduc}{\normalinducfalse\curlyinducfalse\filledinductrue}
+\newcommand{\lineddiode}{\lineddiodetrue\emptydiodefalse\filleddiodefalse}
+\newcommand{\emptydiode}{\lineddiodefalse\emptydiodetrue\filleddiodefalse}
+\newcommand{\filleddiode}{\lineddiodefalse\emptydiodefalse\filleddiodetrue}
 \newcommand{\nocircledtrans}{\circledtransfalse}
 \newcommand{\circledtrans}{\circledtranstrue}
 \DeclareOption{normalinduc}{\normalinduc}
@@ -364,12 +369,7 @@
 \newcommand{\pin}[5][]{
  \prepareelement{P}{}{#4}{#5}{}
  \begin{scope}[shift = {(#2, #3)}]
-  \ifthenelse{\equal{\cdorient}{L}}{\pinL{#1}}{}
-  \ifthenelse{\equal{\cdorient}{R}}{\pinR{#1}}{}
-  \ifthenelse{\equal{\cdorient}{LR}}{\pinLR{#1}}{}
-  \ifthenelse{\equal{\cdorient}{U}}{\pinU{#1}}{}
-  \ifthenelse{\equal{\cdorient}{D}}{\pinD{#1}}{}
-  \ifthenelse{\equal{\cdorient}{UD}}{\pinUD{#1}}{}
+  \expandafter\csname pin\cdorient\endcsname{#1}
   \drawrefval
  \end{scope}
 }
@@ -437,10 +437,7 @@
 \newcommand{\ground}[4][]{
  \prepareelement{P}{}{#4}{}{}
  \begin{scope}[shift = {(#2, #3)}]
-  \ifthenelse{\equal{\cdorient}{L}}{\groundL{#1}}{}
-  \ifthenelse{\equal{\cdorient}{R}}{\groundR{#1}}{}
-  \ifthenelse{\equal{\cdorient}{U}}{\groundU{#1}}{}
-  \ifthenelse{\equal{\cdorient}{D}}{\groundD{#1}}{}
+  \expandafter\csname ground\cdorient\endcsname{#1}
  \end{scope}
 }
 \newcommand{\groundL}[1]{
@@ -467,10 +464,7 @@
 \newcommand{\power}[5][]{
  \prepareelement{P}{}{#4}{}{#5}
  \begin{scope}[shift = {(#2, #3)}]
-  \ifthenelse{\equal{\cdorient}{L}}{\powerL{#1}}{}
-  \ifthenelse{\equal{\cdorient}{R}}{\powerR{#1}}{}
-  \ifthenelse{\equal{\cdorient}{U}}{\powerU{#1}}{}
-  \ifthenelse{\equal{\cdorient}{D}}{\powerD{#1}}{}
+  \expandafter\csname power\cdorient\endcsname{#1}
   \drawrefval
  \end{scope}
 }
@@ -515,7 +509,7 @@
    \FPdiv\cdfloat\cdrefery\cdreferx\FParctan\cdfloat\cdfloat\FPmul\cdfloat\cdfloat{180}\FPdiv\cdfloat\cdfloat\FPpi
   \fi
   \edef\cdorient{\FPprint\cdfloat}
-  \FPround\cdfloat\cdreferx6\FPiflt\cdfloat0\FPadd\cdfloat\cdorient{180}\edef\cdorient{\FPprint\cdfloat}\else\fi
+  \FPround\cdfloat\cdreferx6\FPiflt\cdfloat0\FPadd\cdfloat\cdorient{180}\edef\cdorient{\FPprint\cdfloat}\fi
   \cdbigarrow{\cdreferx}{\cdrefery}{\cdorient}
   \ifthenelse{\equal{#6}{l}\or\equal{#6}{r}}{
    \prepareelement{UA}{}{V#6}{}{#7}
@@ -532,10 +526,7 @@
 \newcommand{\currarrow}[5][]{
  \prepareelement{IA}{}{#4}{}{#5}
  \begin{scope}[shift = {(#2, #3)}]
-  \ifthenelse{\equal{\cdorient}{L}}{\currarrowL{#1}}{}
-  \ifthenelse{\equal{\cdorient}{R}}{\currarrowR{#1}}{}
-  \ifthenelse{\equal{\cdorient}{U}}{\currarrowU{#1}}{}
-  \ifthenelse{\equal{\cdorient}{D}}{\currarrowD{#1}}{}
+  \expandafter\csname currarrow\cdorient\endcsname{#1}
   \drawrefval
  \end{scope}
 }
@@ -567,8 +558,7 @@
 \newcommand{\voltsrc}[6][]{
  \prepareelement{UI}{}{#4}{#5}{#6}
  \begin{scope}[shift = {(#2, #3)}]
-  \ifthenelse{\equal{\cdorient}{H}}{\voltsrcH{#1}}{}
-  \ifthenelse{\equal{\cdorient}{V}}{\voltsrcV{#1}}{}
+  \expandafter\csname voltsrc\cdorient\endcsname{#1}
   \drawrefval
  \end{scope}
 }
@@ -592,8 +582,7 @@
 \newcommand{\currsrc}[6][]{
  \prepareelement{UI}{}{#4}{#5}{#6}
  \begin{scope}[shift = {(#2, #3)}]
-  \ifthenelse{\equal{\cdorient}{H}}{\currsrcH{#1}}{}
-  \ifthenelse{\equal{\cdorient}{V}}{\currsrcV{#1}}{}
+  \expandafter\csname currsrc\cdorient\endcsname{#1}
   \drawrefval
  \end{scope}
 }
@@ -619,10 +608,7 @@
  \renewcommand{\cdelemx}{#3}
  \renewcommand{\cdelemy}{#4}
  \begin{scope}[shift = {(#3, #4)}]
-  \ifthenelse{\equal{\cdorient}{L}}{\switchL{#1}}{}
-  \ifthenelse{\equal{\cdorient}{R}}{\switchR{#1}}{}
-  \ifthenelse{\equal{\cdorient}{U}}{\switchU{#1}}{}
-  \ifthenelse{\equal{\cdorient}{D}}{\switchD{#1}}{}
+  \expandafter\csname switch\cdorient\endcsname{#1}
   \drawrefval
  \end{scope}
 }
@@ -644,43 +630,43 @@
  \ifthenelse{\equal{\cdtype}{off}\or\equal{\cdtype}{offtouch}\or\equal{\cdtype}{offline}}{
   \ifthenelse{\equal{\cdsuborient}{U}}{
    \draw [cdmedlines] (1.747191, 0.094803) -- (-1.871721, 1.451895);
-   \xdef\cdelemy{\cdelemy+0.75}
+   \FPadd\cdfloat\cdelemy{0.75}\xdef\cdelemy{\FPprint\cdfloat}
   }{}
   \ifthenelse{\equal{\cdsuborient}{D}}{
    \draw [cdmedlines] (1.747191, -0.094803) -- (-1.871721, -1.451895);
-   \xdef\cdelemy{\cdelemy-0.75}
+   \FPsub\cdfloat\cdelemy{0.75}\xdef\cdelemy{\FPprint\cdfloat}
   }{}
  }{}
  \ifthenelse{\equal{\cdtype}{on}}{\draw [cdmedlines] (1.73, 0) -- (-1.73, 0);}{}
  \ifthenelse{\equal{\cdtype}{ontouch}\or\equal{\cdtype}{online}}{
   \ifthenelse{\equal{\cdsuborient}{U}}{
    \draw [cdmedlines] (1.731158, 0.024975) -- (-2.117272, 0.382488);
-   \xdef\cdelemy{\cdelemy+0.185797}
+   \FPadd\cdfloat\cdelemy{0.185797}\xdef\cdelemy{\FPprint\cdfloat}
   }{}
   \ifthenelse{\equal{\cdsuborient}{D}}{
    \draw [cdmedlines] (1.731158, -0.024975) -- (-2.117272, -0.382488);
-   \xdef\cdelemy{\cdelemy-0.185797}
+   \FPsub\cdfloat\cdelemy{0.185797}\xdef\cdelemy{\FPprint\cdfloat}
   }{}
  }{}
  \ifthenelse{\equal{\cdtype}{tog}\or\equal{\cdtype}{tog*}}{
   \ifthenelse{\equal{\cdsuborient}{U}}{
    \draw [cdmedlines] (1.747191, 0.094803) -- (-1.747191, 1.405197);
-   \xdef\cdelemy{\cdelemy+0.75}
+   \FPadd\cdfloat\cdelemy{0.75}\xdef\cdelemy{\FPprint\cdfloat}
   }{}
   \ifthenelse{\equal{\cdsuborient}{D}}{
    \draw [cdmedlines] (1.747191, -0.094803) -- (-1.747191, -1.405197);
-   \xdef\cdelemy{\cdelemy-0.75}
+   \FPsub\cdfloat\cdelemy{0.75}\xdef\cdelemy{\FPprint\cdfloat}
   }{}
  }{}
  \ifthenelse{\equal{\cdtype}{togtouch}\or\equal{\cdtype}{togtouch*}\or\equal{\cdtype}{togline}
  \or\equal{\cdtype}{togline*}}{
   \ifthenelse{\equal{\cdsuborient}{U}}{
    \draw [cdmedlines] (1.739930, 0.072551) -- (-2.244920, 1.184197);
-   \xdef\cdelemy{\cdelemy+0.557936}
+   \FPadd\cdfloat\cdelemy{0.557936}\xdef\cdelemy{\FPprint\cdfloat}
   }{}
   \ifthenelse{\equal{\cdsuborient}{D}}{
    \draw [cdmedlines] (1.739930, -0.072551) -- (-2.244920, -1.184197);
-   \xdef\cdelemy{\cdelemy-0.557936}
+   \FPsub\cdfloat\cdelemy{0.557936}\xdef\cdelemy{\FPprint\cdfloat}
   }{}
  }{}
  \cdcircle{2}{0}{R}{1}
@@ -725,43 +711,43 @@
  \ifthenelse{\equal{\cdtype}{off}\or\equal{\cdtype}{offtouch}\or\equal{\cdtype}{offline}}{
   \ifthenelse{\equal{\cdsuborient}{U}}{
    \draw [cdmedlines] (-1.747191, 0.094803) -- (1.871721, 1.451895);
-   \xdef\cdelemy{\cdelemy+0.75}
+   \FPadd\cdfloat\cdelemy{0.75}\xdef\cdelemy{\FPprint\cdfloat}
   }{}
   \ifthenelse{\equal{\cdsuborient}{D}}{
    \draw [cdmedlines] (-1.747191, -0.094803) -- (1.871721, -1.451895);
-   \xdef\cdelemy{\cdelemy-0.75}
+   \FPsub\cdfloat\cdelemy{0.75}\xdef\cdelemy{\FPprint\cdfloat}
   }{}
  }{}
  \ifthenelse{\equal{\cdtype}{on}}{\draw [cdmedlines] (-1.73, 0) -- (1.73, 0);}{}
  \ifthenelse{\equal{\cdtype}{ontouch}\or\equal{\cdtype}{online}}{
   \ifthenelse{\equal{\cdsuborient}{U}}{
    \draw [cdmedlines] (-1.731158, 0.024975) -- (2.117272, 0.382488);
-   \xdef\cdelemy{\cdelemy+0.185797}
+   \FPadd\cdfloat\cdelemy{0.185797}\xdef\cdelemy{\FPprint\cdfloat}
   }{}
   \ifthenelse{\equal{\cdsuborient}{D}}{
    \draw [cdmedlines] (-1.731158, -0.024975) -- (2.117272, -0.382488);
-   \xdef\cdelemy{\cdelemy-0.185797}
+   \FPsub\cdfloat\cdelemy{0.185797}\xdef\cdelemy{\FPprint\cdfloat}
   }{}
  }{}
  \ifthenelse{\equal{\cdtype}{tog}\or\equal{\cdtype}{tog*}}{
   \ifthenelse{\equal{\cdsuborient}{U}}{
    \draw [cdmedlines] (-1.747191, 0.094803) -- (1.747191, 1.405197);
-   \xdef\cdelemy{\cdelemy+0.75}
+   \FPadd\cdfloat\cdelemy{0.75}\xdef\cdelemy{\FPprint\cdfloat}
   }{}
   \ifthenelse{\equal{\cdsuborient}{D}}{
    \draw [cdmedlines] (-1.747191, -0.094803) -- (1.747191, -1.405197);
-   \xdef\cdelemy{\cdelemy-0.75}
+   \FPsub\cdfloat\cdelemy{0.75}\xdef\cdelemy{\FPprint\cdfloat}
   }{}
  }{}
  \ifthenelse{\equal{\cdtype}{togtouch}\or\equal{\cdtype}{togtouch*}\or\equal{\cdtype}{togline}
  \or\equal{\cdtype}{togline*}}{
   \ifthenelse{\equal{\cdsuborient}{U}}{
    \draw [cdmedlines] (-1.739930, 0.072551) -- (2.244920, 1.184197);
-   \xdef\cdelemy{\cdelemy+0.557936}
+   \FPadd\cdfloat\cdelemy{0.557936}\xdef\cdelemy{\FPprint\cdfloat}
   }{}
   \ifthenelse{\equal{\cdsuborient}{D}}{
    \draw [cdmedlines] (-1.739930, -0.072551) -- (2.244920, -1.184197);
-   \xdef\cdelemy{\cdelemy-0.557936}
+   \FPsub\cdfloat\cdelemy{0.557936}\xdef\cdelemy{\FPprint\cdfloat}
   }{}
  }{}
  \cdcircle{-2}{0}{L}{1}
@@ -806,43 +792,43 @@
  \ifthenelse{\equal{\cdtype}{off}\or\equal{\cdtype}{offtouch}\or\equal{\cdtype}{offline}}{
   \ifthenelse{\equal{\cdsuborient}{L}}{
    \draw [cdmedlines] (-0.094803, -1.747191) -- (-1.451895, 1.871721);
-   \xdef\cdelemx{\cdelemx-0.75}
+   \FPsub\cdfloat\cdelemx{0.75}\xdef\cdelemx{\FPprint\cdfloat}
   }{}
   \ifthenelse{\equal{\cdsuborient}{R}}{
    \draw [cdmedlines] (0.094803, -1.747191) -- (1.451895, 1.871721);
-   \xdef\cdelemx{\cdelemx+0.75}
+   \FPadd\cdfloat\cdelemx{0.75}\xdef\cdelemx{\FPprint\cdfloat}
   }{}
  }{}
  \ifthenelse{\equal{\cdtype}{on}}{\draw [cdmedlines] (0, -1.73) -- (0, 1.73);}{}
  \ifthenelse{\equal{\cdtype}{ontouch}\or\equal{\cdtype}{online}}{
   \ifthenelse{\equal{\cdsuborient}{L}}{
    \draw [cdmedlines] (-0.024975, -1.731158) -- (-0.382488, 2.117272);
-   \xdef\cdelemx{\cdelemx-0.185797}
+   \FPsub\cdfloat\cdelemx{0.185797}\xdef\cdelemx{\FPprint\cdfloat}
   }{}
   \ifthenelse{\equal{\cdsuborient}{R}}{
    \draw [cdmedlines] (0.024975, -1.731158) -- (0.382488, 2.117272);
-   \xdef\cdelemx{\cdelemx+0.185797}
+   \FPadd\cdfloat\cdelemx{0.185797}\xdef\cdelemx{\FPprint\cdfloat}
   }{}
  }{}
  \ifthenelse{\equal{\cdtype}{tog}\or\equal{\cdtype}{tog*}}{
   \ifthenelse{\equal{\cdsuborient}{L}}{
    \draw [cdmedlines] (-0.094803, -1.747191) -- (-1.405197, 1.747191);
-   \xdef\cdelemx{\cdelemx-0.75}
+   \FPsub\cdfloat\cdelemx{0.75}\xdef\cdelemx{\FPprint\cdfloat}
   }{}
   \ifthenelse{\equal{\cdsuborient}{R}}{
    \draw [cdmedlines] (0.094803, -1.747191) -- (1.405197, 1.747191);
-   \xdef\cdelemx{\cdelemx+0.75}
+   \FPadd\cdfloat\cdelemx{0.75}\xdef\cdelemx{\FPprint\cdfloat}
   }{}
  }{}
  \ifthenelse{\equal{\cdtype}{togtouch}\or\equal{\cdtype}{togtouch*}\or\equal{\cdtype}{togline}
  \or\equal{\cdtype}{togline*}}{
   \ifthenelse{\equal{\cdsuborient}{L}}{
    \draw [cdmedlines] (-0.072551, -1.739930) -- (-1.184197, 2.244920);
-   \xdef\cdelemx{\cdelemx-0.557936}
+   \FPsub\cdfloat\cdelemx{0.557936}\xdef\cdelemx{\FPprint\cdfloat}
   }{}
   \ifthenelse{\equal{\cdsuborient}{R}}{
    \draw [cdmedlines] (0.072551, -1.739930) -- (1.184197, 2.244920);
-   \xdef\cdelemx{\cdelemx+0.557936}
+   \FPadd\cdfloat\cdelemx{0.557936}\xdef\cdelemx{\FPprint\cdfloat}
   }{}
  }{}
  \cdcircle{0}{-2}{D}{1}
@@ -887,43 +873,43 @@
  \ifthenelse{\equal{\cdtype}{off}\or\equal{\cdtype}{offtouch}\or\equal{\cdtype}{offline}}{
   \ifthenelse{\equal{\cdsuborient}{L}}{
    \draw [cdmedlines] (-0.094803, 1.747191) -- (-1.451895, -1.871721);
-   \xdef\cdelemx{\cdelemx-0.75}
+   \FPsub\cdfloat\cdelemx{0.75}\xdef\cdelemx{\FPprint\cdfloat}
   }{}
   \ifthenelse{\equal{\cdsuborient}{R}}{
    \draw [cdmedlines] (0.094803, 1.747191) -- (1.451895, -1.871721);
-   \xdef\cdelemx{\cdelemx+0.75}
+   \FPadd\cdfloat\cdelemx{0.75}\xdef\cdelemx{\FPprint\cdfloat}
   }{}
  }{}
  \ifthenelse{\equal{\cdtype}{on}}{\draw [cdmedlines] (0, 1.73) -- (0, -1.73);}{}
  \ifthenelse{\equal{\cdtype}{ontouch}\or\equal{\cdtype}{online}}{
   \ifthenelse{\equal{\cdsuborient}{L}}{
    \draw [cdmedlines] (-0.024975, 1.731158) -- (-0.382488, -2.117272);
-   \xdef\cdelemx{\cdelemx-0.185797}
+   \FPsub\cdfloat\cdelemx{0.185797}\xdef\cdelemx{\FPprint\cdfloat}
   }{}
   \ifthenelse{\equal{\cdsuborient}{R}}{
    \draw [cdmedlines] (0.024975, 1.731158) -- (0.382488, -2.117272);
-   \xdef\cdelemx{\cdelemx+0.185797}
+   \FPadd\cdfloat\cdelemx{0.185797}\xdef\cdelemx{\FPprint\cdfloat}
   }{}
  }{}
  \ifthenelse{\equal{\cdtype}{tog}\or\equal{\cdtype}{tog*}}{
   \ifthenelse{\equal{\cdsuborient}{L}}{
    \draw [cdmedlines] (-0.094803, 1.747191) -- (-1.405197, -1.747191);
-   \xdef\cdelemx{\cdelemx-0.75}
+   \FPsub\cdfloat\cdelemx{0.75}\xdef\cdelemx{\FPprint\cdfloat}
   }{}
   \ifthenelse{\equal{\cdsuborient}{R}}{
    \draw [cdmedlines] (0.094803, 1.747191) -- (1.405197, -1.747191);
-   \xdef\cdelemx{\cdelemx+0.75}
+   \FPadd\cdfloat\cdelemx{0.75}\xdef\cdelemx{\FPprint\cdfloat}
   }{}
  }{}
  \ifthenelse{\equal{\cdtype}{togtouch}\or\equal{\cdtype}{togtouch*}\or\equal{\cdtype}{togline}
  \or\equal{\cdtype}{togline*}}{
   \ifthenelse{\equal{\cdsuborient}{L}}{
    \draw [cdmedlines] (-0.072551, 1.739930) -- (-1.184197, -2.244920);
-   \xdef\cdelemx{\cdelemx-0.557936}
+   \FPsub\cdfloat\cdelemx{0.557936}\xdef\cdelemx{\FPprint\cdfloat}
   }{}
   \ifthenelse{\equal{\cdsuborient}{R}}{
    \draw [cdmedlines] (0.072551, 1.739930) -- (1.184197, -2.244920);
-   \xdef\cdelemx{\cdelemx+0.557936}
+   \FPadd\cdfloat\cdelemx{0.557936}\xdef\cdelemx{\FPprint\cdfloat}
   }{}
  }{}
  \cdcircle{0}{2}{U}{1}
@@ -954,8 +940,7 @@
 \newcommand{\resis}[6][]{
  \prepareelement{R}{}{#4}{#5}{#6}
  \begin{scope}[shift = {(#2, #3)}]
-  \ifthenelse{\equal{\cdorient}{H}}{\resisH{#1}}{}
-  \ifthenelse{\equal{\cdorient}{V}}{\resisV{#1}}{}
+  \expandafter\csname resis\cdorient\endcsname{#1}
   \drawrefval
  \end{scope}
 }
@@ -977,8 +962,7 @@
 \newcommand{\capac}[6][]{
  \prepareelement{C}{}{#4}{#5}{#6}
  \begin{scope}[shift = {(#2, #3)}]
-  \ifthenelse{\equal{\cdorient}{H}}{\capacH{#1}}{}
-  \ifthenelse{\equal{\cdorient}{V}}{\capacV{#1}}{}
+  \expandafter\csname capac\cdorient\endcsname{#1}
   \drawrefval
  \end{scope}
 }
@@ -1000,8 +984,7 @@
 \newcommand{\induc}[6][]{
  \prepareelement{L}{}{#4}{#5}{#6}
  \begin{scope}[shift = {(#2, #3)}]
-  \ifthenelse{\equal{\cdorient}{H}}{\inducH{#1}}{}
-  \ifthenelse{\equal{\cdorient}{V}}{\inducV{#1}}{}
+  \expandafter\csname induc\cdorient\endcsname{#1}
   \drawrefval
  \end{scope}
 }
@@ -1035,26 +1018,11 @@
  #1
  \ifthenelse{\equal{\cdinfo}{}}{\windings{4}}{}
 }
-% Stand-alone iron cores
-\newcommand{\Ironcore}[4]{
- \begin{scope}[shift = {(#1, #2)}]
-  \ifthenelse{\equal{#3}{H}}{
-   \draw (-0.75*#4, -0.22) -- (0.75*#4, -0.22);
-   \draw (-0.75*#4, 0.22) -- (0.75*#4, 0.22);
-  }{
-   \draw (-0.22, -0.75*#4) -- (-0.22, 0.75*#4);
-   \draw (0.22, -0.75*#4) -- (0.22, 0.75*#4);
-  }
- \end{scope}
-}
 % Diodes
 \newcommand{\diode}[6][]{
  \prepareelement{D}{}{#4}{#5}{#6}
  \begin{scope}[shift = {(#2, #3)}]
-  \ifthenelse{\equal{\cdorient}{L}}{\diodeL{#1}}{}
-  \ifthenelse{\equal{\cdorient}{R}}{\diodeR{#1}}{}
-  \ifthenelse{\equal{\cdorient}{U}}{\diodeU{#1}}{}
-  \ifthenelse{\equal{\cdorient}{D}}{\diodeD{#1}}{}
+  \expandafter\csname diode\cdorient\endcsname{#1}
   \drawrefval
  \end{scope}
 }
@@ -1068,10 +1036,10 @@
   \draw [cdmedlines] (-1.25, 0) -- (1.25, -1.25) -- (1.25, 1.25) -- cycle;
  \fi
  \draw [cdmedrectlines] (-1.25, -1.25) -- (-1.25, 1.25);
- \ifemptydiode
-  \draw (-1.25, 0) -- (-2, 0) (1.25, 0) -- (2, 0);
- \else
+ \iflineddiode
   \draw (-2, 0) -- (2, 0);
+ \else
+  \draw (-1.25, 0) -- (-2, 0) (1.25, 0) -- (2, 0);
  \fi
 }
 \newcommand{\diodeR}[1]{
@@ -1084,10 +1052,10 @@
   \draw [cdmedlines] (1.25, 0) -- (-1.25, 1.25) -- (-1.25, -1.25) -- cycle;
  \fi
  \draw [cdmedrectlines] (1.25, -1.25) -- (1.25, 1.25);
- \ifemptydiode
-  \draw (-1.25, 0) -- (-2, 0) (1.25, 0) -- (2, 0);
- \else
+ \iflineddiode
   \draw (-2, 0) -- (2, 0);
+ \else
+  \draw (-1.25, 0) -- (-2, 0) (1.25, 0) -- (2, 0);
  \fi
 }
 \newcommand{\diodeU}[1]{
@@ -1100,10 +1068,10 @@
   \draw [cdmedlines] (0, 1.25) -- (-1.25, -1.25) -- (1.25,-1.25) -- cycle;
  \fi
  \draw [cdmedrectlines] (-1.25, 1.25) -- (1.25, 1.25);
- \ifemptydiode
-  \draw (0, -1.25) -- (0, -2) (0, 1.25) -- (0, 2);
- \else
+ \iflineddiode
   \draw (0, -2) -- (0, 2);
+ \else
+  \draw (0, -1.25) -- (0, -2) (0, 1.25) -- (0, 2);
  \fi
 }
 \newcommand{\diodeD}[1]{
@@ -1116,18 +1084,17 @@
   \draw [cdmedlines] (0, -1.25) -- (1.25, 1.25) -- (-1.25, 1.25) -- cycle;
  \fi
  \draw [cdmedrectlines] (-1.25, -1.25) -- (1.25, -1.25);
- \ifemptydiode
-  \draw (0, -1.25) -- (0, -2) (0, 1.25) -- (0, 2);
- \else
+ \iflineddiode
   \draw (0, -2) -- (0, 2);
+ \else
+  \draw (0, -1.25) -- (0, -2) (0, 1.25) -- (0, 2);
  \fi
 }
 % Transistors
 \newcommand{\trans}[7][]{
  \prepareelement{T}{#2}{#5}{#6}{#7}
  \begin{scope}[shift = {(#3, #4)}]
-  \ifthenelse{\equal{\cdorient}{L}}{\transL{#1}}{}
-  \ifthenelse{\equal{\cdorient}{R}}{\transR{#1}}{}
+  \expandafter\csname trans\cdorient\endcsname{#1}
   \drawrefval
  \end{scope}
 }
@@ -1263,8 +1230,7 @@
 \newcommand{\opamp}[6][]{
  \prepareelement{IC}{op}{#4}{#5}{#6}
  \begin{scope}[shift = {(#2, #3)}]
-  \ifthenelse{\equal{\cdorient}{L}}{\opampL{#1}}{}
-  \ifthenelse{\equal{\cdorient}{R}}{\opampR{#1}}{}
+  \expandafter\csname opamp\cdorient\endcsname{#1}
   \drawrefval
  \end{scope}
 }
@@ -1295,16 +1261,7 @@
 \newcommand{\wireU}[1]{\wireX{U}{#1}}
 \newcommand{\wireD}[1]{\wireX{D}{#1}}
 \newcommand{\wireUD}[1]{\wireX{U}{#1}\wireX{D}{#1}}
-\newcommand{\wireX}[2]{
- \ifthenelse{\equal{\cdelem}{P}}{\wireelemP{#1}{#2}}{}
- \ifthenelse{\equal{\cdelem}{UI}}{\wireelemUI{#1}{#2}}{}
- \ifthenelse{\equal{\cdelem}{S}}{\wireelemS{#1}{#2}}{}
- \ifthenelse{\equal{\cdelem}{R}}{\wireelemR{#1}{#2}}{}
- \ifthenelse{\equal{\cdelem}{C}}{\wireelemC{#1}{#2}}{}
- \ifthenelse{\equal{\cdelem}{L}}{\wireelemL{#1}{#2}}{}
- \ifthenelse{\equal{\cdelem}{D}}{\wireelemD{#1}{#2}}{}
- \ifthenelse{\equal{\cdelem}{T}}{\wireelemT{#1}{#2}}{}
-}
+\newcommand{\wireX}[2]{\expandafter\csname wireelem\cdelem\endcsname{#1}{#2}}
 \newcommand{\wireelemP}[2]{
  \ifthenelse{\equal{#1}{L}}{\draw (-1, 0) -- ++(-#2, 0);}{}
  \ifthenelse{\equal{#1}{R}}{\draw (1, 0) -- ++(#2, 0);}{}
@@ -1380,7 +1337,7 @@
  \ifthenelse{\equal{#1}{D}}{\draw (0, -1) -- ++(0, -#2);}{}
 }
 \newcommand{\wireelemL}[2]{
- \setinducend
+ \setinduccounter
  \ifthenelse{\equal{#1}{L}}{\draw (-\thecdcounter, 0) -- ++(-#2, 0);}{}
  \ifthenelse{\equal{#1}{R}}{\draw (\thecdcounter, 0) -- ++(#2, 0);}{}
  \ifthenelse{\equal{#1}{U}}{\draw (0, \thecdcounter) -- ++(0, #2);}{}
@@ -1639,128 +1596,134 @@
 }
 % Windings
 \newcommand{\windings}[1]{
- \renewcommand{\cdinfo}{#1}\setcounter{cdcounter}{#1}
- \ifthenelse{\equal{\cdorient}{H}}{
-  \iffilledinduc
-   \setinducend
-   \FPmul\cdfloat{0.75}{#1}\FPsub\cdfloat\cdfloat{0.5}
-   \filldraw [cdmedlines] (-\FPprint\cdfloat, -0.94) rectangle (\FPprint\cdfloat, 0.94);
-   \draw (-\FPprint\cdfloat, 0) -- (-\thecdcounter, 0);
-   \draw (\FPprint\cdfloat, 0) -- (\thecdcounter, 0);
-  \else
-   \ifthenelse{\equal{\cdsuborient}{U}}{
-    \ifcurlyinduc
-     \whiledo{\value{cdcounter}>1}{
-      \FPmul\cdfloat2\thecdcounter\FPsub\cdfloat\cdfloat{#1}
-      \FPsub\cdfloat\cdfloat2\FPmul\cdfloat\cdfloat{0.75}
-      \draw [cdmedlines] (\FPprint\cdfloat, 0) ++(-0.75, 0.85) arc (90 : 0 : 0.95) arc (0 : -180 : 0.2)
-       arc (180 : 90 : 0.95);
-      \addtocounter{cdcounter}{-1}
-     }
-     \FPmul\cdfloat{0.75}{#1}\FPsub\cdfloat\cdfloat{0.75}
-     \draw [cdmedlines] (-\FPprint\cdfloat, 0.85) arc (90 : 180 : 0.75);
-     \draw [cdmedlines] (\FPprint\cdfloat, 0.85) arc (90 : 0 : 0.75);
-    \else
-     \whiledo{\value{cdcounter}>0}{
-      \FPmul\cdfloat2\thecdcounter\FPsub\cdfloat\cdfloat{#1}
-      \FPsub\cdfloat\cdfloat1\FPmul\cdfloat\cdfloat{0.75}
-      \draw [cdmedlines] (\FPprint\cdfloat, 0.1) ++(-0.75, 0) arc (180 : 0 : 0.75);
-      \addtocounter{cdcounter}{-1}
-     }
-    \fi
-    \draw [cdmedlines] (-0.75*#1, 0) -- (-0.75*#1, 0.1);
-    \draw [cdmedlines] (0.75*#1, 0) -- (0.75*#1, 0.1);
-   }{
-    \ifcurlyinduc
-     \whiledo{\value{cdcounter}>1}{
-      \FPmul\cdfloat2\thecdcounter\FPsub\cdfloat\cdfloat{#1}
-      \FPsub\cdfloat\cdfloat2\FPmul\cdfloat\cdfloat{0.75}
-      \draw [cdmedlines] (\FPprint\cdfloat, 0) ++(-0.75, -0.85) arc (-90 : 0 : 0.95) arc (0 : 180 : 0.2)
-       arc (-180 : -90 : 0.95);
-      \addtocounter{cdcounter}{-1}
-     }
-     \FPmul\cdfloat{0.75}{#1}\FPsub\cdfloat\cdfloat{0.75}
-     \draw [cdmedlines] (-\FPprint\cdfloat, -0.85) arc (-90 : -180 : 0.75);
-     \draw [cdmedlines] (\FPprint\cdfloat, -0.85) arc (-90 : 0 : 0.75);
-    \else
-     \whiledo{\value{cdcounter}>0}{
-      \FPmul\cdfloat2\thecdcounter\FPsub\cdfloat\cdfloat{#1}
-      \FPsub\cdfloat\cdfloat1\FPmul\cdfloat\cdfloat{0.75}
-      \draw [cdmedlines] (\FPprint\cdfloat, -0.1) ++(-0.75, 0) arc (-180 : 0 : 0.75);
-      \addtocounter{cdcounter}{-1}
-     }
-    \fi
-    \draw [cdmedlines] (-0.75*#1, 0) -- (-0.75*#1, -0.1);
-    \draw [cdmedlines] (0.75*#1, 0) -- (0.75*#1, -0.1);
-   }
-   \ifthenelse{\equal{#1}{4}\or\equal{#1}{8}}{}{
-    \setinducend
-    \draw (-0.75*#1, 0) -- (-\thecdcounter, 0);
-    \draw (0.75*#1, 0) -- (\thecdcounter, 0);
-   }
-  \fi
- }{
-  \iffilledinduc
-   \setinducend
-   \FPmul\cdfloat{0.75}{#1}\FPsub\cdfloat\cdfloat{0.5}
-   \filldraw [cdmedlines] (-0.94, -\FPprint\cdfloat) rectangle (0.94, \FPprint\cdfloat);
-   \draw (0, -\FPprint\cdfloat) -- (0, -\thecdcounter);
-   \draw (0, \FPprint\cdfloat) -- (0, \thecdcounter);
-  \else
-   \ifthenelse{\equal{\cdsuborient}{L}}{
-    \ifcurlyinduc
-     \whiledo{\value{cdcounter}>1}{
-      \FPmul\cdfloat2\thecdcounter\FPsub\cdfloat\cdfloat{#1}
-      \FPsub\cdfloat\cdfloat2\FPmul\cdfloat\cdfloat{0.75}
-      \draw [cdmedlines] (0, \FPprint\cdfloat) ++(-0.85, -0.75) arc (180 : 90 : 0.95) arc (90 : -90 : 0.2)
-       arc (-90 : -180 : 0.95);
-      \addtocounter{cdcounter}{-1}
-     }
-     \FPmul\cdfloat{0.75}{#1}\FPsub\cdfloat\cdfloat{0.75}
-     \draw [cdmedlines] (-0.85, -\FPprint\cdfloat) arc (-180 : -90 : 0.75);
-     \draw [cdmedlines] (-0.85, \FPprint\cdfloat) arc (180 : 90 : 0.75);
-    \else
-     \whiledo{\value{cdcounter}>0}{
-      \FPmul\cdfloat2\thecdcounter\FPsub\cdfloat\cdfloat{#1}
-      \FPsub\cdfloat\cdfloat1\FPmul\cdfloat\cdfloat{0.75}
-      \draw [cdmedlines] (-0.1, \FPprint\cdfloat) ++(0, -0.75) arc (270 : 90 : 0.75);
-      \addtocounter{cdcounter}{-1}
-     }
-    \fi
-    \draw [cdmedlines] (0, -0.75*#1) -- (-0.1, -0.75*#1);
-    \draw [cdmedlines] (0, 0.75*#1) -- (-0.1, 0.75*#1);
-   }{
-    \ifcurlyinduc
-     \whiledo{\value{cdcounter}>1}{
-      \FPmul\cdfloat2\thecdcounter\FPsub\cdfloat\cdfloat{#1}
-      \FPsub\cdfloat\cdfloat2\FPmul\cdfloat\cdfloat{0.75}
-      \draw [cdmedlines] (0, \FPprint\cdfloat) ++(0.85, -0.75) arc (0 : 90 : 0.95) arc (90 : 270 : 0.2)
-       arc (-90 : 0 : 0.95);
-      \addtocounter{cdcounter}{-1}
-     }
-     \FPmul\cdfloat{0.75}{#1}\FPsub\cdfloat\cdfloat{0.75}
-     \draw [cdmedlines] (0.85, -\FPprint\cdfloat) arc (0 : -90 : 0.75);
-     \draw [cdmedlines] (0.85, \FPprint\cdfloat) arc (0 : 90 : 0.75);
-    \else
-     \whiledo{\value{cdcounter}>0}{
-      \FPmul\cdfloat2\thecdcounter\FPsub\cdfloat\cdfloat{#1}
-      \FPsub\cdfloat\cdfloat1\FPmul\cdfloat\cdfloat{0.75}
-      \draw [cdmedlines] (0.1, \FPprint\cdfloat) ++(0, -0.75) arc (-90 : 90 : 0.75);
-      \addtocounter{cdcounter}{-1}
-     }
-    \fi
-    \draw [cdmedlines] (0, -0.75*#1) -- (0.1, -0.75*#1);
-    \draw [cdmedlines] (0, 0.75*#1) -- (0.1, 0.75*#1);
-   }
-   \ifthenelse{\equal{#1}{4}\or\equal{#1}{8}}{}{
-    \setinducend
-    \draw (0, -0.75*#1) -- (0, -\thecdcounter);
-    \draw (0, 0.75*#1) -- (0, \thecdcounter);
-   }
-  \fi
- }
+ \renewcommand{\cdinfo}{#1}
+ \expandafter\csname windings\cdorient\cdsuborient\endcsname
 }
-\newcommand{\setinducend}{
+\newcommand{\windingsHU}{
+ \iffilledinduc
+  \filldraw [cdmedlines] (-0.75*\cdinfo+0.5, -0.94) rectangle (0.75*\cdinfo-0.5, 0.94);
+  \setinduccounter
+  \draw (-0.75*\cdinfo+0.5, 0) -- (-\thecdcounter, 0) (0.75*\cdinfo-0.5, 0) -- (\thecdcounter, 0);
+ \else
+  \setcounter{cdcounter}{\cdinfo}
+  \ifcurlyinduc
+   \whiledo{\value{cdcounter}>1}{
+    \FPmul\cdfloat2\thecdcounter\FPsub\cdfloat\cdfloat\cdinfo
+    \FPsub\cdfloat\cdfloat2\FPmul\cdfloat\cdfloat{0.75}
+    \draw [cdmedlines] (\FPprint\cdfloat, 0) ++(-0.75, 0.85) arc (90 : 0 : 0.95) arc (0 : -180 : 0.2)
+     arc (180 : 90 : 0.95);
+    \addtocounter{cdcounter}{-1}
+   }
+   \FPmul\cdfloat{0.75}\cdinfo\FPsub\cdfloat\cdfloat{0.75}
+   \draw [cdmedlines] (-\FPprint\cdfloat, 0.85) arc (90 : 180 : 0.75);
+   \draw [cdmedlines] (\FPprint\cdfloat, 0.85) arc (90 : 0 : 0.75);
+  \else
+   \whiledo{\value{cdcounter}>0}{
+    \FPmul\cdfloat2\thecdcounter\FPsub\cdfloat\cdfloat\cdinfo
+    \FPsub\cdfloat\cdfloat1\FPmul\cdfloat\cdfloat{0.75}
+    \draw [cdmedlines] (\FPprint\cdfloat, 0.1) ++(-0.75, 0) arc (180 : 0 : 0.75);
+    \addtocounter{cdcounter}{-1}
+   }
+  \fi
+  \draw [cdmedlines] (-0.75*\cdinfo, 0) -- ++(0, 0.1) (0.75*\cdinfo, 0) -- ++(0, 0.1);
+  \setinduccounter
+  \draw (-0.75*\cdinfo, 0) -- (-\thecdcounter, 0) (0.75*\cdinfo, 0) -- (\thecdcounter, 0);
+ \fi
+}
+\newcommand{\windingsHD}{
+ \iffilledinduc
+  \filldraw [cdmedlines] (-0.75*\cdinfo+0.5, -0.94) rectangle (0.75*\cdinfo-0.5, 0.94);
+  \setinduccounter
+  \draw (-0.75*\cdinfo+0.5, 0) -- (-\thecdcounter, 0) (0.75*\cdinfo-0.5, 0) -- (\thecdcounter, 0);
+ \else
+  \setcounter{cdcounter}{\cdinfo}
+  \ifcurlyinduc
+   \whiledo{\value{cdcounter}>1}{
+    \FPmul\cdfloat2\thecdcounter\FPsub\cdfloat\cdfloat\cdinfo
+    \FPsub\cdfloat\cdfloat2\FPmul\cdfloat\cdfloat{0.75}
+    \draw [cdmedlines] (\FPprint\cdfloat, 0) ++(-0.75, -0.85) arc (-90 : 0 : 0.95) arc (0 : 180 : 0.2)
+     arc (-180 : -90 : 0.95);
+    \addtocounter{cdcounter}{-1}
+   }
+   \FPmul\cdfloat{0.75}\cdinfo\FPsub\cdfloat\cdfloat{0.75}
+   \draw [cdmedlines] (-\FPprint\cdfloat, -0.85) arc (-90 : -180 : 0.75);
+   \draw [cdmedlines] (\FPprint\cdfloat, -0.85) arc (-90 : 0 : 0.75);
+  \else
+   \whiledo{\value{cdcounter}>0}{
+    \FPmul\cdfloat2\thecdcounter\FPsub\cdfloat\cdfloat\cdinfo
+    \FPsub\cdfloat\cdfloat1\FPmul\cdfloat\cdfloat{0.75}
+    \draw [cdmedlines] (\FPprint\cdfloat, -0.1) ++(-0.75, 0) arc (-180 : 0 : 0.75);
+    \addtocounter{cdcounter}{-1}
+   }
+  \fi
+  \draw [cdmedlines] (-0.75*\cdinfo, 0) -- ++(0, -0.1) (0.75*\cdinfo, 0) -- ++(0, -0.1);
+  \setinduccounter
+  \draw (-0.75*\cdinfo, 0) -- (-\thecdcounter, 0) (0.75*\cdinfo, 0) -- (\thecdcounter, 0);
+ \fi
+}
+\newcommand{\windingsVL}{
+ \iffilledinduc
+  \filldraw [cdmedlines] (-0.94, -0.75*\cdinfo+0.5) rectangle (0.94, 0.75*\cdinfo-0.5);
+  \setinduccounter
+  \draw (0, -0.75*\cdinfo+0.5) -- (0, -\thecdcounter) (0, 0.75*\cdinfo-0.5) -- (0, \thecdcounter);
+ \else
+  \setcounter{cdcounter}{\cdinfo}
+  \ifcurlyinduc
+   \whiledo{\value{cdcounter}>1}{
+    \FPmul\cdfloat2\thecdcounter\FPsub\cdfloat\cdfloat\cdinfo
+    \FPsub\cdfloat\cdfloat2\FPmul\cdfloat\cdfloat{0.75}
+    \draw [cdmedlines] (0, \FPprint\cdfloat) ++(-0.85, -0.75) arc (180 : 90 : 0.95) arc (90 : -90 : 0.2)
+     arc (-90 : -180 : 0.95);
+    \addtocounter{cdcounter}{-1}
+   }
+   \FPmul\cdfloat{0.75}\cdinfo\FPsub\cdfloat\cdfloat{0.75}
+   \draw [cdmedlines] (-0.85, -\FPprint\cdfloat) arc (-180 : -90 : 0.75);
+   \draw [cdmedlines] (-0.85, \FPprint\cdfloat) arc (180 : 90 : 0.75);
+  \else
+   \whiledo{\value{cdcounter}>0}{
+    \FPmul\cdfloat2\thecdcounter\FPsub\cdfloat\cdfloat\cdinfo
+    \FPsub\cdfloat\cdfloat1\FPmul\cdfloat\cdfloat{0.75}
+    \draw [cdmedlines] (-0.1, \FPprint\cdfloat) ++(0, -0.75) arc (270 : 90 : 0.75);
+    \addtocounter{cdcounter}{-1}
+   }
+  \fi
+  \draw [cdmedlines] (0, -0.75*\cdinfo) -- ++(-0.1, 0) (0, 0.75*\cdinfo) -- ++(-0.1, 0);
+  \setinduccounter
+  \draw (0, -0.75*\cdinfo) -- (0, -\thecdcounter) (0, 0.75*\cdinfo) -- (0, \thecdcounter);
+ \fi
+}
+\newcommand{\windingsVR}{
+ \iffilledinduc
+  \filldraw [cdmedlines] (-0.94, -0.75*\cdinfo+0.5) rectangle (0.94, 0.75*\cdinfo-0.5);
+  \setinduccounter
+  \draw (0, -0.75*\cdinfo+0.5) -- (0, -\thecdcounter) (0, 0.75*\cdinfo-0.5) -- (0, \thecdcounter);
+ \else
+  \setcounter{cdcounter}{\cdinfo}
+  \ifcurlyinduc
+   \whiledo{\value{cdcounter}>1}{
+    \FPmul\cdfloat2\thecdcounter\FPsub\cdfloat\cdfloat\cdinfo
+    \FPsub\cdfloat\cdfloat2\FPmul\cdfloat\cdfloat{0.75}
+    \draw [cdmedlines] (0, \FPprint\cdfloat) ++(0.85, -0.75) arc (0 : 90 : 0.95) arc (90 : 270 : 0.2)
+     arc (-90 : 0 : 0.95);
+    \addtocounter{cdcounter}{-1}
+   }
+   \FPmul\cdfloat{0.75}\cdinfo\FPsub\cdfloat\cdfloat{0.75}
+   \draw [cdmedlines] (0.85, -\FPprint\cdfloat) arc (0 : -90 : 0.75);
+   \draw [cdmedlines] (0.85, \FPprint\cdfloat) arc (0 : 90 : 0.75);
+  \else
+   \whiledo{\value{cdcounter}>0}{
+    \FPmul\cdfloat2\thecdcounter\FPsub\cdfloat\cdfloat\cdinfo
+    \FPsub\cdfloat\cdfloat1\FPmul\cdfloat\cdfloat{0.75}
+    \draw [cdmedlines] (0.1, \FPprint\cdfloat) ++(0, -0.75) arc (-90 : 90 : 0.75);
+    \addtocounter{cdcounter}{-1}
+   }
+  \fi
+  \draw [cdmedlines] (0, -0.75*\cdinfo) -- ++(0.1, 0) (0, 0.75*\cdinfo) -- ++(0.1, 0);
+  \setinduccounter
+  \draw (0, -0.75*\cdinfo) -- (0, -\thecdcounter) (0, 0.75*\cdinfo) -- (0, \thecdcounter);
+ \fi
+}
+\newcommand{\setinduccounter}{
  \ifthenelse{\equal{\cdinfo}{}}{
   \setcounter{cdcounter}{3}
  }{
@@ -1768,45 +1731,8 @@
   \setcounter{cdcounter}{\FPprint\cdfloat}
  }
 }
-% Ironcores
-\newcommand{\ironcore}{
- \ifthenelse{\equal{\cdinfo}{}}{\FPset\cdfloat3}{\FPmul\cdfloat{0.75}\cdinfo}
- \iffilledinduc\FPsub\cdfloat\cdfloat{0.45}\fi
- \ifthenelse{\equal{\cdorient}{H}}{
-  \ifthenelse{\equal{\cdsuborient}{U}}{
-   \draw (-\FPprint\cdfloat, 1.28) -- (\FPprint\cdfloat, 1.28);
-  }{
-   \draw (-\FPprint\cdfloat, -1.28) -- (\FPprint\cdfloat, -1.28);
-  }
- }{
-  \ifthenelse{\equal{\cdsuborient}{L}}{
-   \draw (-1.28, -\FPprint\cdfloat) -- (-1.28, \FPprint\cdfloat);
-  }{
-   \draw (1.28, -\FPprint\cdfloat) -- (1.28, \FPprint\cdfloat);
-  }
- }
-}
-% Ferrite cores
-\newcommand{\ferrcore}{
- \ifthenelse{\equal{\cdinfo}{}}{\FPset\cdfloat3}{\FPmul\cdfloat{0.75}\cdinfo}
- \iffilledinduc\FPsub\cdfloat\cdfloat{0.45}\fi
- \ifthenelse{\equal{\cdorient}{H}}{
-  \ifthenelse{\equal{\cdsuborient}{U}}{
-   \draw [cdmedlines,dash pattern=on 5pt off 5pt] (-\FPprint\cdfloat, 1.28) -- (\FPprint\cdfloat, 1.28);
-  }{
-   \draw [cdmedlines,dash pattern=on 5pt off 5pt] (-\FPprint\cdfloat, -1.28) -- (\FPprint\cdfloat, -1.28);
-  }
- }{
-  \ifthenelse{\equal{\cdsuborient}{L}}{
-   \draw [cdmedlines,dash pattern=on 5pt off 5pt] (-1.28, -\FPprint\cdfloat) -- (-1.28, \FPprint\cdfloat);
-  }{
-   \draw [cdmedlines,dash pattern=on 5pt off 5pt] (1.28, -\FPprint\cdfloat) -- (1.28, \FPprint\cdfloat);
-  }
- }
-}
 % Zener diodes
 \newcommand{\zener}[1]{
- \renewcommand{\cdinfo}{zener}
  \ifthenelse{\equal{\cdorient}{L}}{
   \ifthenelse{\equal{#1}{U}}{\draw [cdthickrectlines] (-1.25, 1.25) -- (-0.4, 1.25);}{}
   \ifthenelse{\equal{#1}{D}}{\draw [cdthickrectlines] (-1.25, -1.25) -- (-0.4, -1.25);}{}
@@ -1848,10 +1774,8 @@
  \FPadd\cdfloat\cdvaluey{#2}\edef\cdvaluey{\FPprint\cdfloat}
 }
 \newcommand{\moverefval}[2]{
- \FPadd\cdfloat\cdrefvalx{#1}
- \edef\cdrefvalx{\FPprint\cdfloat}
- \FPadd\cdfloat\cdrefvaly{#2}
- \edef\cdrefvaly{\FPprint\cdfloat}
+ \FPadd\cdfloat\cdrefvalx{#1}\edef\cdrefvalx{\FPprint\cdfloat}
+ \FPadd\cdfloat\cdrefvaly{#2}\edef\cdrefvaly{\FPprint\cdfloat}
 }
 % Element preparation
 \newcommand{\prepareelement}[5]{

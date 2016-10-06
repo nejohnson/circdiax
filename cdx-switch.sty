@@ -1,11 +1,8 @@
 % cd-switch.sty
-%
+% Extended by: Neil Johnson <neil@njohnson.co.uk>
 % Derived from:
 % from http://www.jokr.de/stefan/
-% File created by Stefan Krause -- version 1.0.
-%
-% Extended by: Neil Johnson
-%
+% File created by Stefan Krause -- version 1.1.
 % Supports additional switch and relay symbols for circdiax.sty.
 \newcommand{\cdelemxfirst}{}
 \newcommand{\cdelemyfirst}{}
@@ -16,8 +13,7 @@
  \renewcommand{\cdelemx}{#2}
  \renewcommand{\cdelemy}{#3}
  \begin{scope}[shift = {(#2, #3)}]
-  \ifthenelse{\equal{\cdorient}{H}}{\relayH{#1}}{}
-  \ifthenelse{\equal{\cdorient}{V}}{\relayV{#1}}{}
+  \expandafter\csname relay\cdorient\endcsname{#1}
   \drawrefval
  \end{scope}
 }
@@ -42,19 +38,32 @@
  \edef\cdorientfirst{\cdorient}
  #2
  \ifthenelse{\equal{\cdorientfirst}{H}}{
-  \ifthenelse{\cdelemy>\cdelemyfirst}{
-   \draw [dashed] (\cdelemxfirst, \cdelemyfirst+2.45) |- (\cdelemx, \cdelemy);
-  }{}
-  \ifthenelse{\cdelemy<\cdelemyfirst}{
-   \draw [dashed] (\cdelemxfirst, \cdelemyfirst-2.45) |- (\cdelemx, \cdelemy);
-  }{}
- }{}
- \ifthenelse{\equal{\cdorientfirst}{V}}{
-  \ifthenelse{\cdelemx>\cdelemxfirst}{
-   \draw [dashed] (\cdelemxfirst+2.45, \cdelemyfirst) -| (\cdelemx, \cdelemy);
-  }{}
-  \ifthenelse{\cdelemx<\cdelemxfirst}{
-   \draw [dashed] (\cdelemxfirst-2.45, \cdelemyfirst) -| (\cdelemx, \cdelemy);
-  }{}
- }{}
+  \ifthenelse{\equal{\cdorient}{L}\or\equal{\cdorient}{R}}{
+   \FPiflt\cdelemy\cdelemyfirst
+    \draw [cddashedlines] (\cdelemxfirst, \cdelemyfirst-2.45) |- (\cdelemx, \cdelemyfirst-3.5) -- (\cdelemx, \cdelemy);
+   \else
+    \draw [cddashedlines] (\cdelemxfirst, \cdelemyfirst+2.45) |- (\cdelemx, \cdelemyfirst+3.5) -- (\cdelemx, \cdelemy);
+   \fi
+  }{
+   \FPiflt\cdelemy\cdelemyfirst
+    \draw [cddashedlines] (\cdelemxfirst, \cdelemyfirst-2.45) |- (\cdelemx, \cdelemy);
+   \else
+    \draw [cddashedlines] (\cdelemxfirst, \cdelemyfirst+2.45) |- (\cdelemx, \cdelemy);
+   \fi
+  }
+ }{
+  \ifthenelse{\equal{\cdorient}{L}\or\equal{\cdorient}{R}}{
+   \FPiflt\cdelemx\cdelemxfirst
+    \draw [cddashedlines] (\cdelemxfirst-2.45, \cdelemyfirst) -| (\cdelemx, \cdelemy);
+   \else
+    \draw [cddashedlines] (\cdelemxfirst+2.45, \cdelemyfirst) -| (\cdelemx, \cdelemy);
+   \fi
+  }{
+   \FPiflt\cdelemx\cdelemxfirst
+    \draw [cddashedlines] (\cdelemxfirst-2.45, \cdelemyfirst) -| (\cdelemxfirst-3.5, \cdelemy) -- (\cdelemx, \cdelemy);
+   \else
+    \draw [cddashedlines] (\cdelemxfirst+2.45, \cdelemyfirst) -| (\cdelemxfirst+3.5, \cdelemy) -- (\cdelemx, \cdelemy);
+   \fi
+  }
+ }
 }

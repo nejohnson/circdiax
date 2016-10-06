@@ -1,18 +1,14 @@
 % cdx-digital.sty
-%
+% Extended by: Neil Johnson <neil@njohnson.co.uk>
 % Derived from:
 % from http://www.jokr.de/stefan/
-% File created by Stefan Krause -- version 1.2.
-%
-% Extended by: Neil Johnson
-%
+% File created by Stefan Krause -- version 1.3.
 % Supports digital symbols for circdiax.sty.
 % Gates
 \newcommand{\gate}[7][]{
  \prepareelement{IC}{#2}{#5}{#6}{#7}
  \begin{scope}[shift = {(#3, #4)}]
-  \ifthenelse{\equal{\cdorient}{L}}{\gateL{#1}}{}
-  \ifthenelse{\equal{\cdorient}{R}}{\gateR{#1}}{}
+  \expandafter\csname gate\cdorient\endcsname{#1}
   \drawrefval
  \end{scope}
 }

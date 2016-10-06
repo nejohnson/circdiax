@@ -1,11 +1,8 @@
 % cdx-mech.sty
-%
+% Extended by: Neil Johnson <neil@njohnson.co.uk>
 % Derived from:
 % from http://www.jokr.de/stefan/
-% File created by Stefan Krause -- version 1.1.
-%
-% Extended by: Neil Johnson
-%
+% File created by Stefan Krause -- version 1.2.
 % Supports mechanical symbols for circdiax.sty.
 % Wires coming out of or going into the paper
 \newcommand{\wiredot}[2]{
@@ -21,8 +18,7 @@
  \prepareelement{M}{}{#5}{}{#6}
  \renewcommand{\cdinfo}{#4}
  \begin{scope}[shift = {(#2, #3)}]
-  \ifthenelse{\equal{\cdorient}{H}}{\techdimH{#1}}{}
-  \ifthenelse{\equal{\cdorient}{V}}{\techdimV{#1}}{}
+  \expandafter\csname techdim\cdorient\endcsname{#1}
   \drawrefval
  \end{scope}
 }

@@ -1,13 +1,9 @@
 % cdx-semicon.sty
-%
+% Extended by: Neil Johnson <neil@njohnson.co.uk>
 % Derived from:
 % from http://www.jokr.de/stefan/
-% File created by Stefan Krause -- version 1.3.
-%
-% Extended by: Neil Johnson
-%
+% File created by Stefan Krause -- version 1.5.
 % Supports additional semiconductor symbols for circdiax.sty.
-% WARNING: \schottky for \trans is in beta and subject to change.
 % Diodes
 \renewcommand{\diodeL}[1]{
  \setstandardtextpos{ud}
@@ -26,10 +22,10 @@
   \draw (-1.7, 0) -- (-2, 0);
   \ifemptydiode\draw (1.7, 0) -- (2, 0);\else\draw (-0.8, 0) -- (2, 0);\fi
  }{
-  \ifemptydiode
-   \draw (-1.25, 0) -- (-2, 0) (1.25, 0) -- (2, 0);
-  \else
+  \iflineddiode
    \draw (-2, 0) -- (2, 0);
+  \else
+   \draw (-1.25, 0) -- (-2, 0) (1.25, 0) -- (2, 0);
   \fi
  }
 }
@@ -50,10 +46,10 @@
   \ifemptydiode\draw (-1.7, 0) -- (-2, 0);\else\draw (0.8, 0) -- (-2, 0);\fi
   \draw (1.7, 0) -- (2, 0);
  }{
-  \ifemptydiode
-   \draw (-1.25, 0) -- (-2, 0) (1.25, 0) -- (2, 0);
-  \else
+  \iflineddiode
    \draw (-2, 0) -- (2, 0);
+  \else
+   \draw (-1.25, 0) -- (-2, 0) (1.25, 0) -- (2, 0);
   \fi
  }
 }
@@ -74,10 +70,10 @@
   \ifemptydiode\draw (0, -1.7) -- (0, -2);\else\draw (0, 0.8) -- (0, -2);\fi
   \draw (0, 1.7) -- (0, 2);
  }{
-  \ifemptydiode
-   \draw (0, -1.25) -- (0, -2) (0, 1.25) -- (0, 2);
-  \else
+  \iflineddiode
    \draw (0, -2) -- (0, 2);
+  \else
+   \draw (0, -1.25) -- (0, -2) (0, 1.25) -- (0, 2);
   \fi
  }
 }
@@ -98,10 +94,10 @@
   \draw (0, -1.7) -- (0, -2);
   \ifemptydiode\draw (0, 1.7) -- (0, 2);\else\draw (0, -0.8) -- (0, 2);\fi
  }{
-  \ifemptydiode
-   \draw (0, -1.25) -- (0, -2) (0, 1.25) -- (0, 2);
-  \else
+  \iflineddiode
    \draw (0, -2) -- (0, 2);
+  \else
+   \draw (0, -1.25) -- (0, -2) (0, 1.25) -- (0, 2);
   \fi
  }
 }
@@ -109,8 +105,7 @@
 \newcommand{\diac}[6][]{
  \prepareelement{D}{}{#4}{#5}{#6}
  \begin{scope}[shift = {(#2, #3)}]
-  \ifthenelse{\equal{\cdorient}{H}}{\diacH{#1}}{}
-  \ifthenelse{\equal{\cdorient}{V}}{\diacV{#1}}{}
+  \expandafter\csname diac\cdorient\endcsname{#1}
   \drawrefval
  \end{scope}
 }
@@ -160,7 +155,6 @@
 }
 % Schottky diodes and transistors
 \newcommand{\schottky}{
- \renewcommand{\cdinfo}{schottky}
  \ifthenelse{\equal{\cdelem}{D}}{
   \ifthenelse{\equal{\cdorient}{L}}{
    \draw [cdmedrectlines] (-1.25, 1.25) -| (-0.75, 0.75) (-1.25, -1.25) -| (-1.75, -0.75);
@@ -175,9 +169,15 @@
    \draw [cdmedrectlines] (-1.25, -1.25) |- (-0.75, -0.75) (1.25, -1.25) |- (0.75, -1.75);
   }{}
  }{}
- % WARNING: \schottky for \trans is in beta and subject to change.
  \ifthenelse{\equal{\cdelem}{T}}{
-  \draw [cdmedrectlines] (-1.05, 1.84) -| (-0.55, 1.34) (-1.15, -1.84) -| (-1.65, -1.34);
+  \ifthenelse{\equal{\cdorient}{L}}{
+   \draw [cdmedrectlines] (1.1, 1.99) -| (1.65, 1.49) (1.1, -1.99) -| (0.55, -1.49);
+   \draw [cdthicklines] (1.1, -1.9) -- (1.1, 1.9);
+  }{}
+  \ifthenelse{\equal{\cdorient}{R}}{
+   \draw [cdmedrectlines] (-1.1, 1.99) -| (-0.55, 1.49) (-1.1, -1.99) -| (-1.65, -1.49);
+   \draw [cdthicklines] (-1.1, -1.9) -- (-1.1, 1.9);
+  }{}
  }{}
 }
 % Tunnel diodes
