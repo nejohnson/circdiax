@@ -1,8 +1,7 @@
-% cdx-ics.sty
+% cdx-ic.sty
 % Extended by: Neil Johnson <neil@njohnson.co.uk>
-% Derived from:
-% from http://www.jokr.de/stefan/
-% File created by Stefan Krause -- version 2.5.
+% from http://www.taylorgruppe.de/circdia/
+% File created by Stefan Krause -- version 3.0.
 % Supports integrated circuit block symbols for circdiax.sty.
 % Linear ICs
 \newcommand{\linic}[7][]{
@@ -81,27 +80,27 @@
 \newcommand{\ttlic}[7][]{
  \prepareelement{IC}{#2}{#5}{#6}{#7}
  \begin{scope}[shift = {(#3, #4)}]
-  \ifthenelse{\cdtype>7399\and\cdtype<7430}{\ttlicLRA{#1}}{}   % 7400-7429
-  \ifthenelse{\cdtype>7429\and\cdtype<7460}{\ttlicLRB{#1}}{}   % 7430-7459
-  \ifthenelse{\cdtype>7459\and\cdtype<7500}{\ttlicLRC{#1}}{}   % 7460-7499
-  \ifthenelse{\cdtype>74099\and\cdtype<74150}{\ttlicLRD{#1}}{}   % 74100-74149
-  \ifthenelse{\cdtype>74149\and\cdtype<74200}{\ttlicLRE{#1}}{}   % 74150-74199
-  \ifthenelse{\cdtype>74199\and\cdtype<74300}{\ttlicLRF{#1}}{}   % 74200-74299
-  \ifthenelse{\cdtype>74299\and\cdtype<74500}{\ttlicLRG{#1}}{}   % 74300-74499
-  \ifthenelse{\cdtype>74499\and\cdtype<74700}{\ttlicLRH{#1}}{}   % 74500-74699
+  \ifthenelse{\cdtype>7399\AND\cdtype<7430}{\ttlicLRA{#1}}{}   % 7400-7429
+  \ifthenelse{\cdtype>7429\AND\cdtype<7460}{\ttlicLRB{#1}}{}   % 7430-7459
+  \ifthenelse{\cdtype>7459\AND\cdtype<7500}{\ttlicLRC{#1}}{}   % 7460-7499
+  \ifthenelse{\cdtype>74099\AND\cdtype<74150}{\ttlicLRD{#1}}{}   % 74100-74149
+  \ifthenelse{\cdtype>74149\AND\cdtype<74200}{\ttlicLRE{#1}}{}   % 74150-74199
+  \ifthenelse{\cdtype>74199\AND\cdtype<74300}{\ttlicLRF{#1}}{}   % 74200-74299
+  \ifthenelse{\cdtype>74299\AND\cdtype<74500}{\ttlicLRG{#1}}{}   % 74300-74499
+  \ifthenelse{\cdtype>74499\AND\cdtype<74700}{\ttlicLRH{#1}}{}   % 74500-74699
   \drawrefval
  \end{scope}
 }
 \newcommand{\ttlicLRA}[1]{
  \setstandardtextpos{ud}
  % 4x NAND (2), 4x NOR (2)
- \ifthenelse{\equal{\cdtype}{7400}\or\equal{\cdtype}{7402}}{\digfourtwoone{}{n}{#1}}{}
+ \ifthenelse{\equal{\cdtype}{7400}\OR\equal{\cdtype}{7402}}{\digfourtwoone{}{n}{#1}}{}
  % 4x NAND OC (2)
- \ifthenelse{\equal{\cdtype}{7401}\or\equal{\cdtype}{7403}\or\equal{\cdtype}{7426}}{\digfourtwoone{}{noc}{#1}}{}
+ \ifthenelse{\equal{\cdtype}{7401}\OR\equal{\cdtype}{7403}\OR\equal{\cdtype}{7426}}{\digfourtwoone{}{noc}{#1}}{}
  % 6x Inverter
  \ifthenelse{\equal{\cdtype}{7404}}{\digsixoneone{}{n}{#1}}{}
  % 6x Inverter OC
- \ifthenelse{\equal{\cdtype}{7405}\or\equal{\cdtype}{7406}}{\digsixoneone{}{noc}{#1}}{}
+ \ifthenelse{\equal{\cdtype}{7405}\OR\equal{\cdtype}{7406}}{\digsixoneone{}{noc}{#1}}{}
  % 6x Buffer
  \ifthenelse{\equal{\cdtype}{7407}}{\digsixoneone{}{}{#1}}{}
  % 4x AND (2)
@@ -109,7 +108,7 @@
  % 4x AND OC (2)
  \ifthenelse{\equal{\cdtype}{7409}}{\digfourtwoone{}{oc}{#1}}{}
  % 3x NAND (3), 3x NOR (3)
- \ifthenelse{\equal{\cdtype}{7410}\or\equal{\cdtype}{7427}}{\digthreethreeone{}{n}{#1}}{}
+ \ifthenelse{\equal{\cdtype}{7410}\OR\equal{\cdtype}{7427}}{\digthreethreeone{}{n}{#1}}{}
  % 3x AND (3)
  \ifthenelse{\equal{\cdtype}{7411}}{\digthreethreeone{}{}{#1}}{}
  % 6x Inverter ST (3)
@@ -285,6 +284,13 @@
   \digitalin{1}{D2}\digitalin{3}{D3}\digitalin{5}{D4}\digitalin{7}{D5}\digitalin{9}{D6}\digitalin{11}{D7}
   \digitalout[n]{-2}{Q}\digitalout{2}{Q}
  }{}
+ % 2x 1-of-4
+ \ifthenelse{\equal{\cdtype}{74153}}{
+  \digitalborder{#1}{12}
+  \digitalin[n]{-11}{EX}\digitalin[n]{-9}{EY}\digitalin{-7}{A0}\digitalin{-5}{A1}\digitalin{-3}{X0}\digitalin{-1}{X1}
+  \digitalin{1}{X2}\digitalin{3}{X3}\digitalin{5}{Y0}\digitalin{7}{Y1}\digitalin{9}{Y2}\digitalin{11}{Y3}
+  \digitalout{-2}{X}\digitalout{2}{Y}
+ }{}
  % 2x 2-bit to 1-of-4, active low
  \ifthenelse{\equal{\cdtype}{74155}}{
   \digitalborder{#1}{8}
@@ -408,7 +414,7 @@
  \digitalin[#1]{5}{A}\digitalout[#2]{5}{Q}
 }
 \newcommand{\digthreethreeone}[3]{
- \digitalborder{#2}{9}
+ \digitalborder{#3}{9}
  \digitalin[#1]{-8}{A}\digitalin[#1]{-6}{B}\digitalin[#1]{-4}{C}\digitalout[#2]{-6}{Q}
  \digitalsep{-3}
  \digitalin[#1]{-2}{A}\digitalin[#1]{0}{B}\digitalin[#1]{2}{C}\digitalout[#2]{0}{Q}
@@ -540,3 +546,223 @@
  \draw (-2, 0) -- (-3, 0) (4, 0) -- (3.2, 0);
  \ifthenelse{\equal{\cdsuborient}{U}}{\draw (-1, 2.2) -- (-1, 3);}{\draw (-1, -2.2) -- (-1, -3);}
 }
+% Operational amplifier text
+\newcommand{\optext}[1]{
+ \ifthenelse{\equal{\cdorient}{L}}{\cdputtext{0.75}{0}{c}{#1}}{}
+ \ifthenelse{\equal{\cdorient}{R}}{\cdputtext{-0.75}{0}{c}{#1}}{}
+}
+% Pin numbers
+\newcommand{\pinnos}{\@ifnextchar\bgroup{\pinnoone}{}}
+\newcommand{\pinnoone}[1]{
+ \textsmaller{\sffamily\expandafter\csname pinnoput\cdtype\cdorient\cdsuborient\endcsname#1{}{}{}{}{}{}{}}
+ \@ifnextchar\bgroup{\pinnoone}{}
+}
+% Pin numbers: operational amplifiers
+\newcommand{\pinnoputopLD}[7]{
+ \ifthenelse{\equal{#1}{+}}{\cdputtext{3.75}{-1.1}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{-}}{\cdputtext{3.75}{2.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{o}}{\cdputtext{-3.25}{0.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1#2}{su}}{\cdputtext{-0.5}{2.4}{r}{#4#5#6}}{}
+ \ifthenelse{\equal{#1#2}{sd}}{\cdputtext{-0.5}{-2.6}{r}{#4#5#6}}{}
+}
+\newcommand{\pinnoputopLU}[7]{
+ \ifthenelse{\equal{#1}{+}}{\cdputtext{3.75}{2.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{-}}{\cdputtext{3.75}{-1.1}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{o}}{\cdputtext{-3.25}{0.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1#2}{su}}{\cdputtext{-0.5}{2.4}{r}{#4#5#6}}{}
+ \ifthenelse{\equal{#1#2}{sd}}{\cdputtext{-0.5}{-2.6}{r}{#4#5#6}}{}
+}
+\newcommand{\pinnoputopRD}[7]{
+ \ifthenelse{\equal{#1}{+}}{\cdputtext{-3.75}{-1.1}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{-}}{\cdputtext{-3.75}{2.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{o}}{\cdputtext{3.25}{0.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1#2}{su}}{\cdputtext{0.5}{2.4}{l}{#4#5#6}}{}
+ \ifthenelse{\equal{#1#2}{sd}}{\cdputtext{0.5}{-2.6}{l}{#4#5#6}}{}
+}
+\newcommand{\pinnoputopRU}[7]{
+ \ifthenelse{\equal{#1}{+}}{\cdputtext{-3.75}{2.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{-}}{\cdputtext{-3.75}{-1.1}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{o}}{\cdputtext{3.25}{0.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1#2}{su}}{\cdputtext{0.5}{2.4}{l}{#4#5#6}}{}
+ \ifthenelse{\equal{#1#2}{sd}}{\cdputtext{0.5}{-2.6}{l}{#4#5#6}}{}
+}
+% Pin numbers: gates
+\newcommand{\pinnoputbufL}[7]{
+ \ifeugate
+  \ifthenelse{\equal{#1}{a}}{\cdputtext{2.75}{0.9}{l}{#3#4#5}}{}
+  \ifthenelse{\equal{#1}{q}}{\cdputtext{-2.75}{0.9}{r}{#3#4#5}}{}
+  \ifthenelse{\equal{#1#2}{3u}}{\cdputtext{-0.5}{3.15}{r}{#4#5#6}}{}
+  \ifthenelse{\equal{#1#2}{3d}}{\cdputtext{-0.5}{-3.35}{r}{#4#5#6}}{}
+ \else
+  \ifthenelse{\equal{#1}{a}}{\cdputtext{2.75}{0.9}{l}{#3#4#5}}{}
+  \ifthenelse{\equal{#1}{q}}{\cdputtext{-2.75}{0.9}{r}{#3#4#5}}{}
+  \ifthenelse{\equal{#1#2}{3u}}{\cdputtext{-0.5}{1.9}{r}{#4#5#6}}{}
+  \ifthenelse{\equal{#1#2}{3d}}{\cdputtext{-0.5}{-2.1}{r}{#4#5#6}}{}
+ \fi
+}
+\newcommand{\pinnoputnotL}{\pinnoputbufL}
+\newcommand{\pinnoputbufR}[7]{
+ \ifeugate
+  \ifthenelse{\equal{#1}{a}}{\cdputtext{-2.75}{0.9}{r}{#3#4#5}}{}
+  \ifthenelse{\equal{#1}{q}}{\cdputtext{2.75}{0.9}{l}{#3#4#5}}{}
+  \ifthenelse{\equal{#1#2}{3u}}{\cdputtext{0.5}{3.15}{l}{#4#5#6}}{}
+  \ifthenelse{\equal{#1#2}{3d}}{\cdputtext{0.5}{-3.35}{l}{#4#5#6}}{}
+ \else
+  \ifthenelse{\equal{#1}{a}}{\cdputtext{-2.75}{0.9}{r}{#3#4#5}}{}
+  \ifthenelse{\equal{#1}{q}}{\cdputtext{2.75}{0.9}{l}{#3#4#5}}{}
+  \ifthenelse{\equal{#1#2}{3u}}{\cdputtext{0.5}{1.9}{l}{#4#5#6}}{}
+  \ifthenelse{\equal{#1#2}{3d}}{\cdputtext{0.5}{-2.1}{l}{#4#5#6}}{}
+ \fi
+}
+\newcommand{\pinnoputnotR}{\pinnoputbufR}
+\newcommand{\pinnoputandL}[7]{
+ \ifeugate
+  \ifthenelse{\equal{#1}{a}}{
+   \ifthenelse{\equal{\cdinfo}{}\OR\equal{\cdinfo}{2}}{
+    \cdputtext{2.5}{-1.1+4*#2}{l}{#4#5#6}
+   }{
+    \cdputtext{2.5}{1.9-\cdinfo+2*#2}{l}{#4#5#6}
+   }
+  }{}
+  \ifthenelse{\equal{#1}{q}}{\cdputtext{-3.5}{0.9}{r}{#3#4#5}}{}
+  \ifthenelse{\equal{#1#2}{3u}}{
+   \ifthenelse{\equal{\cdinfo}{}\OR\equal{\cdinfo}{2}}{
+    \cdputtext{-1.5}{3.4}{r}{#4#5#6}
+   }{
+    \cdputtext{-1.5}{0.4+\cdinfo}{r}{#4#5#6}
+   }
+  }{}
+  \ifthenelse{\equal{#1#2}{3d}}{
+   \ifthenelse{\equal{\cdinfo}{}\OR\equal{\cdinfo}{2}}{
+    \cdputtext{-1.5}{-3.6}{r}{#4#5#6}
+   }{
+    \cdputtext{-1.5}{-0.6-\cdinfo}{r}{#4#5#6}
+   }
+  }{}
+ \else
+  \ifthenelse{\equal{#1}{a}}{
+   \ifthenelse{\equal{\cdinfo}{}\OR\equal{\cdinfo}{2}}{
+    \cdputtext{2.75}{-1.1+4*#2}{l}{#4#5#6}
+   }{
+    \cdputtext{2.75}{1.9-\cdinfo+2*#2}{l}{#4#5#6}
+   }
+  }{}
+  \ifthenelse{\equal{#1}{q}}{\cdputtext{-3.75}{0.9}{r}{#3#4#5}}{}
+  \ifthenelse{\equal{#1#2}{3u}}{\cdputtext{-1.5}{3.15}{r}{#4#5#6}}{}
+  \ifthenelse{\equal{#1#2}{3d}}{\cdputtext{-1.5}{-3.35}{r}{#4#5#6}}{}
+ \fi
+}
+\newcommand{\pinnoputnandL}{\pinnoputandL}
+\newcommand{\pinnoputorL}{\pinnoputandL}
+\newcommand{\pinnoputnorL}{\pinnoputandL}
+\newcommand{\pinnoputxorL}{\pinnoputandL}
+\newcommand{\pinnoputxnorL}{\pinnoputandL}
+\newcommand{\pinnoputandR}[7]{
+ \ifeugate
+  \ifthenelse{\equal{#1}{a}}{
+   \ifthenelse{\equal{\cdinfo}{}\OR\equal{\cdinfo}{2}}{
+    \cdputtext{-2.5}{-1.1+4*#2}{r}{#4#5#6}
+   }{
+    \cdputtext{-2.5}{1.9-\cdinfo+2*#2}{r}{#4#5#6}
+   }
+  }{}
+  \ifthenelse{\equal{#1}{q}}{\cdputtext{3.5}{0.9}{l}{#3#4#5}}{}
+  \ifthenelse{\equal{#1#2}{3u}}{
+   \ifthenelse{\equal{\cdinfo}{}\OR\equal{\cdinfo}{2}}{
+    \cdputtext{1.5}{3.4}{l}{#4#5#6}
+   }{
+    \cdputtext{1.5}{0.4+\cdinfo}{l}{#4#5#6}
+   }
+  }{}
+  \ifthenelse{\equal{#1#2}{3d}}{
+   \ifthenelse{\equal{\cdinfo}{}\OR\equal{\cdinfo}{2}}{
+    \cdputtext{1.5}{-3.6}{l}{#4#5#6}
+   }{
+    \cdputtext{1.5}{-0.6-\cdinfo}{l}{#4#5#6}
+   }
+  }{}
+ \else
+  \ifthenelse{\equal{#1}{a}}{
+   \ifthenelse{\equal{\cdinfo}{}\OR\equal{\cdinfo}{2}}{
+    \cdputtext{-2.75}{-1.1+4*#2}{r}{#4#5#6}
+   }{
+    \cdputtext{-2.75}{1.9-\cdinfo+2*#2}{r}{#4#5#6}
+   }
+  }{}
+  \ifthenelse{\equal{#1}{q}}{\cdputtext{3.75}{0.9}{l}{#3#4#5}}{}
+  \ifthenelse{\equal{#1#2}{3u}}{\cdputtext{1.5}{3.15}{l}{#4#5#6}}{}
+  \ifthenelse{\equal{#1#2}{3d}}{\cdputtext{1.5}{-3.35}{l}{#4#5#6}}{}
+ \fi
+}
+\newcommand{\pinnoputnandR}{\pinnoputandR}
+\newcommand{\pinnoputorR}{\pinnoputandR}
+\newcommand{\pinnoputnorR}{\pinnoputandR}
+\newcommand{\pinnoputxorR}{\pinnoputandR}
+\newcommand{\pinnoputxnorR}{\pinnoputandR}
+% Pin numbers: flipflops
+\newcommand{\pinnoputsrL}[7]{
+ \ifthenelse{\equal{#1}{s}}{\cdputtext{3.75}{2.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{r}}{\cdputtext{3.75}{-1.1}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{c}}{\cdputtext{3.75}{0.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{q}}{\cdputtext{-3.75}{2.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1#2}{/q}}{\cdputtext{-3.75}{-1.1}{r}{#4#5#6}}{}
+}
+\newcommand{\pinnoputnsrL}{\pinnoputsrL}
+\newcommand{\pinnoputsrmsL}{\pinnoputsrL}
+\newcommand{\pinnoputnsrmsL}{\pinnoputsrL}
+\newcommand{\pinnoputsrR}[7]{
+ \ifthenelse{\equal{#1}{s}}{\cdputtext{-3.75}{2.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{r}}{\cdputtext{-3.75}{-1.1}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{c}}{\cdputtext{-3.75}{0.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{q}}{\cdputtext{3.75}{2.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1#2}{/q}}{\cdputtext{3.75}{-1.1}{l}{#4#5#6}}{}
+}
+\newcommand{\pinnoputnsrR}{\pinnoputsrR}
+\newcommand{\pinnoputsrmsR}{\pinnoputsrR}
+\newcommand{\pinnoputnsrmsR}{\pinnoputsrR}
+\newcommand{\pinnoputdL}[7]{
+ \ifthenelse{\equal{#1}{d}}{\cdputtext{3.75}{2.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{c}}{\cdputtext{3.75}{0.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{q}}{\cdputtext{-3.75}{2.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1#2}{/q}}{\cdputtext{-3.75}{-1.1}{r}{#4#5#6}}{}
+ \ifthenelse{\equal{#1}{s}}{\cdputtext{-0.5}{4.15}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{r}}{\cdputtext{-0.5}{-4.35}{r}{#3#4#5}}{}
+}
+\newcommand{\pinnoputndL}{\pinnoputdL}
+\newcommand{\pinnoputdmsL}{\pinnoputdL}
+\newcommand{\pinnoputndmsL}{\pinnoputdL}
+\newcommand{\pinnoputdR}[7]{
+ \ifthenelse{\equal{#1}{d}}{\cdputtext{-3.75}{2.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{c}}{\cdputtext{-3.75}{0.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{q}}{\cdputtext{3.75}{2.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1#2}{/q}}{\cdputtext{3.75}{-1.1}{l}{#4#5#6}}{}
+ \ifthenelse{\equal{#1}{s}}{\cdputtext{0.5}{4.15}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{r}}{\cdputtext{0.5}{-4.35}{l}{#3#4#5}}{}
+}
+\newcommand{\pinnoputndR}{\pinnoputdR}
+\newcommand{\pinnoputdmsR}{\pinnoputdR}
+\newcommand{\pinnoputndmsR}{\pinnoputdR}
+\newcommand{\pinnoputjkL}[7]{
+ \ifthenelse{\equal{#1}{j}}{\cdputtext{3.75}{2.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{k}}{\cdputtext{3.75}{-1.1}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{c}}{\cdputtext{3.75}{0.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{q}}{\cdputtext{-3.75}{2.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1#2}{/q}}{\cdputtext{-3.75}{-1.1}{r}{#4#5#6}}{}
+ \ifthenelse{\equal{#1}{s}}{\cdputtext{-0.5}{4.15}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{r}}{\cdputtext{-0.5}{-4.35}{r}{#3#4#5}}{}
+}
+\newcommand{\pinnoputnjkL}{\pinnoputjkL}
+\newcommand{\pinnoputjkmsL}{\pinnoputjkL}
+\newcommand{\pinnoputnjkmsL}{\pinnoputjkL}
+\newcommand{\pinnoputjkR}[7]{
+ \ifthenelse{\equal{#1}{j}}{\cdputtext{-3.75}{2.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{k}}{\cdputtext{-3.75}{-1.1}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{c}}{\cdputtext{-3.75}{0.9}{r}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{q}}{\cdputtext{3.75}{2.9}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1#2}{/q}}{\cdputtext{3.75}{-1.1}{l}{#4#5#6}}{}
+ \ifthenelse{\equal{#1}{s}}{\cdputtext{0.5}{4.15}{l}{#3#4#5}}{}
+ \ifthenelse{\equal{#1}{r}}{\cdputtext{0.5}{-4.35}{l}{#3#4#5}}{}
+}
+\newcommand{\pinnoputnjkR}{\pinnoputjkR}
+\newcommand{\pinnoputjkmsR}{\pinnoputjkR}
+\newcommand{\pinnoputnjkmsR}{\pinnoputjkR}

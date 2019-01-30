@@ -1,8 +1,7 @@
 % cdx-srcmeas.sty
 % Extended by: Neil Johnson <neil@njohnson.co.uk>
-% Derived from:
-% from http://www.jokr.de/stefan/
-% File created by Stefan Krause -- version 1.4.
+% from http://www.taylorgruppe.de/circdia/
+% File created by Stefan Krause -- version 1.6.
 % Supports additional source and measurement symbols for circdiax.sty.
 % Other sources
 \newcommand{\othersrc}[7][]{
@@ -233,28 +232,26 @@
  \draw (0, -2) -- (0, -3) (0, 2) -- (0, 3);
 }
 % Additional wires
+\let\wireelemUIsrcmeas=\wireelemUI
 \renewcommand{\wireelemUI}[2]{
  \ifthenelse{\equal{#1}{L}}{
   \ifthenelse{\equal{\cdtype}{batt}}{\begin{scope}[shift = {(2, 0)}]}{}
   \ifthenelse{\equal{\cdtype}{batt2}}{\begin{scope}[shift = {(1, 0)}]}{}
-  \draw (-3, 0) -- ++(-#2, 0);
  }{}
  \ifthenelse{\equal{#1}{R}}{
   \ifthenelse{\equal{\cdtype}{batt}}{\begin{scope}[shift = {(-2, 0)}]}{}
   \ifthenelse{\equal{\cdtype}{batt2}}{\begin{scope}[shift = {(-1, 0)}]}{}
-  \draw (3, 0) -- ++(#2, 0);
  }{}
  \ifthenelse{\equal{#1}{U}}{
   \ifthenelse{\equal{\cdtype}{batt}}{\begin{scope}[shift = {(0, -2)}]}{}
   \ifthenelse{\equal{\cdtype}{batt2}}{\begin{scope}[shift = {(0, -1)}]}{}
-  \draw (0, 3) -- ++(0, #2);
  }{}
  \ifthenelse{\equal{#1}{D}}{
   \ifthenelse{\equal{\cdtype}{batt}}{\begin{scope}[shift = {(0, 2)}]}{}
   \ifthenelse{\equal{\cdtype}{batt2}}{\begin{scope}[shift = {(0, 1)}]}{}
-  \draw (0, -3) -- ++(0, -#2);
  }{}
- \ifthenelse{\equal{\cdtype}{batt}\or\equal{\cdtype}{batt2}}{\end{scope}}{}
+ \wireelemUIsrcmeas{#1}{#2}
+ \ifthenelse{\equal{\cdtype}{batt}\OR\equal{\cdtype}{batt2}}{\end{scope}}{}
 }
 % Signal symbols
 \newcommand{\sigsym}[1]{
