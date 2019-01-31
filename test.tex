@@ -111,5 +111,33 @@
 \end{circuitdiagram}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Add: Ground}
+
+\begin{circuitdiagram}[]{25}{25}
+  \ground{earth}{5}{5}{D}{}
+  \ground{chassis}{10}{5}{D}{}
+  \ground{signal}{15}{5}{D}{D}
+  \ground{}{20}{5}{D}{}
+  
+  \ground{earth}{5}{10}{U}{}
+  \ground{chassis}{10}{10}{U}{}
+  \ground{signal}{15}{10}{U}{U}
+  \ground{}{20}{10}{U}{}
+  
+  \ground{earth}{5}{15}{L}{}
+  \ground{chassis}{10}{15}{L}{}
+  \ground{signal}{15}{15}{L}{L}
+  \ground{}{20}{15}{L}{}
+  
+  \ground{earth}{5}{20}{R}{}
+  \ground{chassis}{10}{20}{R}{}
+  \ground{signal}{15}{20}{R}{R}
+  \ground{}{20}{20}{R}{}
+\end{circuitdiagram}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

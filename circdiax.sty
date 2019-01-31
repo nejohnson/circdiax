@@ -441,31 +441,112 @@
  \draw (0, -\cdinfo) -- (0, -1) (0, \cdinfo) -- (0, 1);
 }
 % Grounds
-\newcommand{\ground}[4][]{
- \prepareelement{P}{}{#4}{}{}
- \begin{scope}[shift = {(#2, #3)}]
+\newcommand{\ground}[6][]{
+ \prepareelement{P}{#2}{#5}{#6}{}
+ \begin{scope}[shift = {(#3, #4)}]
   \expandafter\csname ground\cdorient\endcsname{#1}
+  \ifthenelse{\equal{\cdtype}{signal}}{\drawrefval}{}
  \end{scope}
 }
 \newcommand{\groundL}[1]{
+ \ifthenelse{\equal{\cdtype}{signal}}{
+  \setstandardtextpos{l}
+  \placerefvalH{-1.25}{0}{1.25}{-1.75}{0}{1.75}
+ }{}
  #1
- \draw [cdthicklines] (0, -1.2) -- (0, 1.2);
  \draw (0, 0) -- (1, 0);
+ \ifthenelse{\equal{\cdtype}{}}{
+  \draw [cdthicklines] (0, -1.2) -- (0, 1.2);
+ }{
+  \draw [cdmedlines] (0, -1.2) -- (0, 1.2);
+ } 
+ \ifthenelse{\equal{\cdtype}{earth}}{
+  \draw [cdmedlines] (-0.5, -0.7) -- (-0.5, 0.7);
+  \draw [cdmedlines] (-1.0, -0.2) -- (-1.0, 0.2);
+ }{}
+ \ifthenelse{\equal{\cdtype}{chassis}}{
+  \draw [cdmedlines] (0, -1.2) -- (-1, -0.8);
+  \draw [cdmedlines] (0,    0) -- (-1, 0.4);
+  \draw [cdmedlines] (0,  1.2) -- (-1, 1.6);
+ }{}
+ \ifthenelse{\equal{\cdtype}{signal}}{
+  \draw [cdmedlines] (0, 1.2) -- (-1, 0) -- (0, -1.2);
+ }{}
 }
 \newcommand{\groundR}[1]{
+ \ifthenelse{\equal{\cdtype}{signal}}{
+  \setstandardtextpos{r}
+  \placerefvalH{-1.25}{0}{1.25}{-1.75}{0}{1.75}
+ }{}
  #1
- \draw [cdthicklines] (0, -1.2) -- (0, 1.2);
  \draw (0, 0) -- (-1, 0);
+ \ifthenelse{\equal{\cdtype}{}}{
+  \draw [cdthicklines] (0, -1.2) -- (0, 1.2);
+ }{
+  \draw [cdmedlines] (0, -1.2) -- (0, 1.2);
+ } 
+ \ifthenelse{\equal{\cdtype}{earth}}{
+  \draw [cdmedlines] (0.5, -0.7) -- (0.5, 0.7);
+  \draw [cdmedlines] (1.0, -0.2) -- (1.0, 0.2);
+ }{}
+ \ifthenelse{\equal{\cdtype}{chassis}}{
+  \draw [cdmedlines] (0, -1.2) -- (1, -1.6);
+  \draw [cdmedlines] (0,    0) -- (1, -0.4);
+  \draw [cdmedlines] (0,  1.2) -- (1,  0.8);
+ }{}
+ \ifthenelse{\equal{\cdtype}{signal}}{
+  \draw [cdmedlines] (0,  1.2) -- (1,0) -- (0,-1.2);
+ }{}
 }
 \newcommand{\groundU}[1]{
+ \ifthenelse{\equal{\cdtype}{signal}}{
+  \setstandardtextpos{u}
+  \placerefvalV{-0.75}{0}{0.75}{-2}{0}{2}
+ }{}
  #1
- \draw [cdthicklines] (-1.2, 0) -- (1.2, 0);
  \draw (0, 0) -- (0, -1);
+ \ifthenelse{\equal{\cdtype}{}}{
+  \draw [cdthicklines] (-1.2, 0) -- (1.2, 0);
+ }{
+  \draw [cdmedlines] (-1.2, 0) -- (1.2, 0);
+ } 
+ \ifthenelse{\equal{\cdtype}{earth}}{
+  \draw [cdmedlines] (-0.7, 0.5) -- (0.7, 0.5);
+  \draw [cdmedlines] (-0.2, 1.0) -- (0.2, 1.0);
+ }{}
+ \ifthenelse{\equal{\cdtype}{chassis}}{
+  \draw [cdmedlines] (-1.2, 0) -- (-1.6, 1);
+  \draw [cdmedlines] ( 0,   0) -- (-0.4, 1);
+  \draw [cdmedlines] ( 1.2, 0) -- ( 0.8, 1);
+ }{}
+ \ifthenelse{\equal{\cdtype}{signal}}{
+  \draw [cdmedlines] (1.2, 0) -- (0,1) -- (-1.2, 0);
+ }{}
 }
 \newcommand{\groundD}[1]{
+ \ifthenelse{\equal{\cdtype}{signal}}{
+  \setstandardtextpos{d}
+  \placerefvalV{-0.75}{0}{0.75}{-2}{0}{2}
+ }{}
  #1
- \draw [cdthicklines] (-1.2, 0) -- (1.2, 0);
  \draw (0, 0) -- (0, 1);
+ \ifthenelse{\equal{\cdtype}{}}{
+  \draw [cdthicklines] (-1.2, 0) -- (1.2, 0);
+ }{
+  \draw [cdmedlines] (-1.2, 0) -- (1.2, 0);
+ } 
+ \ifthenelse{\equal{\cdtype}{earth}}{
+  \draw [cdmedlines] (-0.7, -0.5) -- (0.7, -0.5);
+  \draw [cdmedlines] (-0.2, -1.0) -- (0.2, -1.0);
+ }{}
+ \ifthenelse{\equal{\cdtype}{chassis}}{
+  \draw [cdmedlines] (-1.2, 0) -- (-1.6, -1);
+  \draw [cdmedlines] ( 0,   0) -- (-0.4, -1);
+  \draw [cdmedlines] ( 1.2, 0) -- ( 0.8, -1);
+ }{}
+ \ifthenelse{\equal{\cdtype}{signal}}{
+  \draw [cdmedlines] (1.2,  0) -- (0, -1) -- (-1.2, 0);
+ }{}
 }
 % Powers
 \newcommand{\power}[5][]{
