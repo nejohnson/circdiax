@@ -445,7 +445,7 @@
  \prepareelement{P}{#2}{#5}{#6}{}
  \begin{scope}[shift = {(#3, #4)}]
   \expandafter\csname ground\cdorient\endcsname{#1}
-  \ifthenelse{\equal{\cdtype}{signal}}{\drawrefval}{}
+  \drawrefval
  \end{scope}
 }
 \newcommand{\groundL}[1]{
