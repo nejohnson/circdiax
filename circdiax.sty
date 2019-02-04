@@ -442,7 +442,7 @@
 }
 % Grounds
 \newcommand{\ground}[6][]{
- \prepareelement{P}{#2}{#5}{#6}{}
+ \prepareelement{P}{#2}{#5}{\scriptsize #6}{}
  \begin{scope}[shift = {(#3, #4)}]
   \expandafter\csname ground\cdorient\endcsname{#1}
   \drawrefval
